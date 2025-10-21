@@ -22,10 +22,20 @@ FEED_SOURCES = [
         'url': 'https://www.apra.gov.au/news-and-publications',
         'name': 'APRA News',
         'type': 'webpage'
+    },
+    {
+        'url': 'https://rss.app/feeds/rMlPOR4nHXy72VfZ.xml',
+        'name': 'ASIC Media Releases',
+        'type': 'rss'
+    },
+    {
+        'url': 'https://rss.app/feeds/xhH6bkOKqSo5Jhng.xml',
+        'name': 'RBA Media Releases',
+        'type': 'rss'
     }
 ]
 
-MAX_ARTICLES = 20
+ARTICLES_PER_SOURCE = 10  # Fetch 10 latest articles from each source
 OUTPUT_HTML = 'index.html'
 OUTPUT_XML = 'feed-data.xml'
 
@@ -171,32 +181,150 @@ def fetch_apra_news():
         soup = BeautifulSoup(response.content, 'html.parser')
         articles = []
         
-        # Find news items (adjust selectors based on actual page structure)
-        news_items = soup.select('.view-content .views-row')[:10]
+        # Try multiple selectors for APRA's page structure
+        news_items = soup.select('.view-content .views-row')
         
-        for item in news_items:
+        if not news_items:
+            # Try alternative selectors
+            news_items = soup.select('article, .node, .item, .news-item')
+        
+        if not news_items:
+            # Try finding links with dates nearby
+            news_items = soup.select('.views-row, [class*="news"], [class*="publication"]')
+        
+        print(f"  Found {len(news_items)} potential APRA items")
+        
+        # Limit to 10 articles
+        for item in news_items[:10]:
             try:
-                title_elem = item.select_one('h3 a, h2 a, .title a')
-                link_elem = item.select_one('a')
-                date_elem = item.select_one('.date, time, .field--name-created')
-                summary_elem = item.select_one('.summary, .field--name-body, p')
+                # Try multiple selectors for title/link
+                title_elem = item.select_one('h3 a, h2 a, .title a, a[href*="/news"], a[href*="/publication"]')
                 
-                if title_elem and link_elem:
-                    article_url = link_elem.get('href', '')
-                    if article_url.startswith('/'):
-                        article_url = 'https://www.apra.gov.au' + article_url
-                    
+                if not title_elem:
+                    # Try finding any link in the item
+                    title_elem = item.find('a')
+                
+                if not title_elem:
+                    continue
+                
+                link_elem = title_elem
+                
+                # Try multiple date selectors
+                date_elem = item.select_one(
+                    '.date, time, .views-field-created, .field--name-created, '
+                    '.views-field-field-date, [class*="date"]'
+                )
+                
+                # If no date element, try to extract from text
+                date_text = ''
+                if date_elem:
+                    date_text = date_elem.get_text(strip=True)
+                else:
+                    item_text = item.get_text()
+                    date_text = extract_date_from_text(item_text)
+                
+                summary_elem = item.select_one('.summary, .views-field-body, .field--name-body, p')
+                
+                article_url = link_elem.get('href', '')
+                if article_url.startswith('/'):
+                    article_url = 'https://www.apra.gov.au' + article_url
+                
+                # Only add if it looks like a real article URL
+                if article_url and ('apra.gov.au' in article_url):
                     article = {
                         'title': title_elem.get_text(strip=True),
                         'link': article_url,
-                        'published': date_elem.get_text(strip=True) if date_elem else '',
+                        'published': date_text or '',
                         'summary': summary_elem.get_text(strip=True)[:300] if summary_elem else '',
                     }
                     articles.append(article)
+                    print(f"    Found APRA article: {article['title'][:50]}...")
             except Exception as e:
-                print(f"Error parsing APRA article: {e}")
+                print(f"  Error parsing APRA item: {e}")
                 continue
         
+        print(f"  Successfully parsed {len(articles)} APRA articles")
+        return articles
+    except Exception as e:
+        print(f"Error fetching APRA news: {e}")
+        return []
+
+def fetch_apra_news():
+    """Scrape APRA news page to create RSS-like entries"""
+    try:
+        url = 'https://www.apra.gov.au/news-and-publications'
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        articles = []
+        
+        # Try multiple selectors for APRA's page structure
+        news_items = soup.select('.view-content .views-row')
+        
+        if not news_items:
+            # Try alternative selectors
+            news_items = soup.select('article, .node, .item, .news-item')
+        
+        if not news_items:
+            # Try finding links with dates nearby
+            news_items = soup.select('.views-row, [class*="news"], [class*="publication"]')
+        
+        print(f"  Found {len(news_items)} potential APRA items")
+        
+        # Limit to 10 articles
+        for item in news_items[:10]:
+            try:
+                # Try multiple selectors for title/link
+                title_elem = item.select_one('h3 a, h2 a, .title a, a[href*="/news"], a[href*="/publication"]')
+                
+                if not title_elem:
+                    # Try finding any link in the item
+                    title_elem = item.find('a')
+                
+                if not title_elem:
+                    continue
+                
+                link_elem = title_elem
+                
+                # Try multiple date selectors
+                date_elem = item.select_one(
+                    '.date, time, .views-field-created, .field--name-created, '
+                    '.views-field-field-date, [class*="date"]'
+                )
+                
+                # If no date element, try to extract from text
+                date_text = ''
+                if date_elem:
+                    date_text = date_elem.get_text(strip=True)
+                else:
+                    item_text = item.get_text()
+                    date_text = extract_date_from_text(item_text)
+                
+                summary_elem = item.select_one('.summary, .views-field-body, .field--name-body, p')
+                
+                article_url = link_elem.get('href', '')
+                if article_url.startswith('/'):
+                    article_url = 'https://www.apra.gov.au' + article_url
+                
+                # Only add if it looks like a real article URL
+                if article_url and ('apra.gov.au' in article_url):
+                    article = {
+                        'title': title_elem.get_text(strip=True),
+                        'link': article_url,
+                        'published': date_text or '',
+                        'summary': summary_elem.get_text(strip=True)[:300] if summary_elem else '',
+                    }
+                    articles.append(article)
+                    print(f"    Found APRA article: {article['title'][:50]}...")
+            except Exception as e:
+                print(f"  Error parsing APRA item: {e}")
+                continue
+        
+        print(f"  Successfully parsed {len(articles)} APRA articles")
         return articles
     except Exception as e:
         print(f"Error fetching APRA news: {e}")
@@ -208,7 +336,7 @@ def parse_rss_feed(url):
         feed = feedparser.parse(url)
         articles = []
         
-        for entry in feed.entries[:15]:
+        for entry in feed.entries[:10]:  # Limit to 10 articles per feed
             article = {
                 'title': entry.get('title', 'No title'),
                 'link': entry.get('link', ''),
@@ -247,8 +375,8 @@ def process_feeds():
             print(f"  Fetching full text for: {article['title'][:50]}...")
             article['full_text'] = fetch_full_text(article['link'])
             
-            # If date is missing for AUSTRAC articles, try to extract from full text
-            if not article['published'] and 'austrac.gov.au' in source['url']:
+            # If date is missing, try to extract from full text
+            if not article['published']:
                 date_from_text = extract_date_from_text(article['full_text'])
                 if date_from_text:
                     article['published'] = date_from_text
@@ -258,9 +386,9 @@ def process_feeds():
         
         all_articles.extend(articles)
     
-    # Sort by date (newest first) and limit to MAX_ARTICLES
+    # Sort by date (newest first) - no limit, showing 10 from each source
     all_articles.sort(key=lambda x: parse_date(x['published']), reverse=True)
-    return all_articles[:MAX_ARTICLES]
+    return all_articles
 
 def parse_date(date_str):
     """Parse date string to datetime object (timezone-naive)"""
@@ -300,263 +428,549 @@ def format_date(date_str):
 
 def generate_html(articles):
     """Generate static HTML page"""
-    html = f'''<!DOCTYPE html>
+    
+    html = '''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Australian Financial Regulators News Feed</title>
+    <title>Australian Financial Regulators Feed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {{
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }}
+        }
 
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: #f5f7fa;
-            padding: 20px;
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #64748b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+            --bg-primary: #1e293b;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #334155;
+            --bg-page: #0f172a;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(to bottom, #0f172a 0%, #020617 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
             line-height: 1.6;
-        }}
+            padding: 0;
+        }
 
-        .container {{
+        .nav-bar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 30px;
-        }}
-
-        header {{
-            border-bottom: 3px solid #007bff;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }}
-
-        h1 {{
-            color: #1a1a1a;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }}
-
-        .meta-info {{
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            color: #666;
-            font-size: 14px;
-        }}
+        }
 
-        .last-updated {{
-            font-weight: 500;
-        }}
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+        }
 
-        .actions {{
+        .nav-right {
             display: flex;
-            gap: 10px;
-        }}
+            align-items: center;
+            gap: 1rem;
+        }
 
-        .btn {{
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
+        .last-updated-badge {
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
             text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-        }}
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
 
-        .btn-primary {{
-            background: #007bff;
-            color: white;
-        }}
+        .nav-link:hover {
+            background: var(--bg-secondary);
+            color: var(--primary);
+        }
 
-        .btn-primary:hover {{
-            background: #0056b3;
-        }}
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem 3rem;
+        }
 
-        .btn-secondary {{
-            background: #6c757d;
-            color: white;
-        }}
+        .header-section {
+            margin-bottom: 2rem;
+        }
 
-        .btn-secondary:hover {{
-            background: #545b62;
-        }}
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.025em;
+        }
 
-        .table-container {{
+        .content-card {
+            background: var(--bg-primary);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .table-wrapper {
             overflow-x: auto;
-            margin-top: 20px;
-        }}
+        }
 
-        table {{
+        table {
             width: 100%;
             border-collapse: collapse;
-        }}
+        }
 
-        th {{
-            background: #343a40;
-            color: white;
-            padding: 15px;
+        thead {
+            background: linear-gradient(to bottom, #334155, #1e293b);
+        }
+
+        th {
+            padding: 1rem;
             text-align: left;
             font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #ffffff;
             position: sticky;
             top: 0;
             z-index: 10;
-        }}
+            cursor: pointer;
+            user-select: none;
+        }
 
-        td {{
-            padding: 15px;
-            border-bottom: 1px solid #e9ecef;
-            vertical-align: top;
-        }}
+        th:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
 
-        tr:hover {{
-            background: #f8f9fa;
-        }}
-
-        .source-badge {{
+        .sort-icon {
             display: inline-block;
-            padding: 4px 10px;
-            background: #e7f3ff;
-            color: #0056b3;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }}
+            margin-left: 0.5rem;
+            opacity: 0.3;
+            font-size: 0.75rem;
+        }
 
-        .article-title {{
-            color: #007bff;
+        th.sorted .sort-icon {
+            opacity: 1;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            vertical-align: top;
+        }
+
+        .source-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 9999px;
+            font-size: 0.75rem;
             font-weight: 600;
-            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            margin-bottom: 0.5rem;
+        }
+
+        .source-tag.accc {
+            background: #1e3a8a;
+            color: #93c5fd;
+        }
+
+        .source-tag.austrac {
+            background: #14532d;
+            color: #86efac;
+        }
+
+        .source-tag.apra {
+            background: #713f12;
+            color: #fde047;
+        }
+
+        .source-tag.asic {
+            background: #7c2d12;
+            color: #fca5a5;
+        }
+
+        .source-tag.rba {
+            background: #3730a3;
+            color: #c4b5fd;
+        }
+
+        .article-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9375rem;
             text-decoration: none;
             display: block;
-            margin-bottom: 5px;
-        }}
+            line-height: 1.5;
+            transition: color 0.2s;
+        }
 
-        .article-title:hover {{
-            text-decoration: underline;
-        }}
+        .article-title:hover {
+            color: var(--primary);
+        }
 
-        .article-date {{
-            color: #666;
-            font-size: 13px;
-        }}
+        .article-date {
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            font-weight: 500;
+        }
 
-        .article-content {{
-            color: #333;
-            font-size: 14px;
-            line-height: 1.6;
-            max-height: 400px;
+        .article-content {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.7;
+            max-height: 20rem;
             overflow-y: auto;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 4px;
-            border-left: 3px solid #007bff;
-        }}
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            border-left: 3px solid var(--primary);
+        }
 
-        .article-content::-webkit-scrollbar {{
-            width: 8px;
-        }}
+        .article-content::-webkit-scrollbar {
+            width: 6px;
+        }
 
-        .article-content::-webkit-scrollbar-track {{
-            background: #f1f1f1;
-            border-radius: 4px;
-        }}
+        .article-content::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+        }
 
-        .article-content::-webkit-scrollbar-thumb {{
-            background: #888;
-            border-radius: 4px;
-        }}
+        .article-content::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 3px;
+        }
 
-        .article-content::-webkit-scrollbar-thumb:hover {{
-            background: #555;
-        }}
+        .article-content::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
 
-        .footer {{
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e9ecef;
+        .footer {
+            margin-top: 3rem;
+            padding: 2rem;
             text-align: center;
-            color: #666;
-            font-size: 14px;
-        }}
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+        }
 
-        @media (max-width: 768px) {{
-            .container {{
-                padding: 15px;
-            }}
+        .footer-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem auto;
+            max-width: 12rem;
+        }
 
-            table {{
-                font-size: 13px;
-            }}
+        .filter-section {
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
-            th, td {{
-                padding: 10px;
-            }}
-        }}
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .filter-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .article-row {
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .article-row.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem 2rem;
+                margin: 1rem auto;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+                flex-wrap: wrap;
+            }
+
+            .nav-right {
+                flex-wrap: wrap;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filter-buttons {
+                width: 100%;
+            }
+
+            .filter-btn {
+                flex: 1;
+                min-width: fit-content;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.8125rem;
+            }
+
+            .article-content {
+                max-height: 15rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📰 Australian Financial Regulators News Feed</h1>
-            <div class="meta-info">
-                <div class="last-updated">
-                    Last Updated: {datetime.now().strftime('%d %B %Y at %H:%M AEDT')}
-                </div>
-                <div class="actions">
-                    <a href="feed-data.xml" class="btn btn-secondary" download>Download XML</a>
-                    <a href="https://github.com/YOUR_USERNAME/YOUR_REPO/actions" class="btn btn-primary" target="_blank">Trigger Refresh</a>
-                </div>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="logo">Financial Regulators Feed</div>
+            <div class="nav-right">
+                <span class="last-updated-badge">Last Updated: ''' + datetime.now().strftime('%d %b %Y %H:%M') + '''</span>
+                <a href="feed-data.xml" class="nav-link" download>Export XML</a>
             </div>
-        </header>
+        </div>
+    </nav>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 25%;">Title</th>
-                        <th style="width: 12%;">Date</th>
-                        <th style="width: 63%;">Full Text</th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="container">
+        <div class="header-section">
+            <h1 class="page-title">Latest Regulatory Updates</h1>
+        </div>
+
+        <div class="filter-section">
+            <span class="filter-label">Filter by Source:</span>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all" onclick="filterArticles('all')">All Sources</button>
+                <button class="filter-btn" data-filter="ACCC News" onclick="filterArticles('ACCC News')">ACCC</button>
+                <button class="filter-btn" data-filter="ASIC Media Releases" onclick="filterArticles('ASIC Media Releases')">ASIC</button>
+                <button class="filter-btn" data-filter="APRA News" onclick="filterArticles('APRA News')">APRA</button>
+                <button class="filter-btn" data-filter="AUSTRAC Media Releases" onclick="filterArticles('AUSTRAC Media Releases')">AUSTRAC</button>
+                <button class="filter-btn" data-filter="RBA Media Releases" onclick="filterArticles('RBA Media Releases')">RBA</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 28%;" onclick="sortTable('title')">
+                                Title
+                                <span class="sort-icon">▼</span>
+                            </th>
+                            <th style="width: 12%;" onclick="sortTable('date')">
+                                Date
+                                <span class="sort-icon">▼</span>
+                            </th>
+                            <th style="width: 60%;">Content</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articleTableBody">
 '''
     
     for article in articles:
+        source_class = article['source'].lower().split()[0]
         html += f'''
-                    <tr>
-                        <td>
-                            <span class="source-badge">{article['source']}</span>
-                            <a href="{article['link']}" target="_blank" class="article-title">{article['title']}</a>
-                        </td>
-                        <td>
-                            <span class="article-date">{format_date(article['published'])}</span>
-                        </td>
-                        <td>
-                            <div class="article-content">{article['full_text']}</div>
-                        </td>
-                    </tr>
+                        <tr class="article-row" data-source="{article['source']}" data-title="{article['title'].lower()}" data-date="{article['published']}">
+                            <td>
+                                <span class="source-tag {source_class}">{article['source']}</span>
+                                <a href="{article['link']}" target="_blank" class="article-title">{article['title']}</a>
+                            </td>
+                            <td>
+                                <span class="article-date">{format_date(article['published'])}</span>
+                            </td>
+                            <td>
+                                <div class="article-content">{article['full_text']}</div>
+                            </td>
+                        </tr>
 '''
     
-    html += f'''
-                </tbody>
-            </table>
+    html += '''
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="footer">
-            <p>Showing latest {len(articles)} articles from ACCC, AUSTRAC, and APRA</p>
-            <p>Updates automatically every 12 hours via GitHub Actions</p>
+            <p>Displaying latest articles from ACCC, ASIC, APRA, AUSTRAC, and RBA</p>
+            <div class="footer-divider"></div>
+            <p>Automatically updated every 12 hours</p>
         </div>
     </div>
+
+    <script>
+        let currentSort = { column: null, ascending: true };
+
+        function filterArticles(source) {
+            const rows = document.querySelectorAll('.article-row');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => {
+                if (btn.dataset.filter === source) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            rows.forEach(row => {
+                const rowSource = row.dataset.source;
+                if (source === 'all' || rowSource === source) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        }
+
+        function sortTable(column) {
+            const tbody = document.getElementById('articleTableBody');
+            const rows = Array.from(tbody.querySelectorAll('.article-row'));
+            
+            // Toggle sort direction if clicking same column
+            if (currentSort.column === column) {
+                currentSort.ascending = !currentSort.ascending;
+            } else {
+                currentSort.column = column;
+                currentSort.ascending = true;
+            }
+            
+            // Update header indicators
+            document.querySelectorAll('th').forEach(th => {
+                th.classList.remove('sorted');
+                const icon = th.querySelector('.sort-icon');
+                if (icon) icon.textContent = '▼';
+            });
+            
+            const activeHeader = document.querySelector(`th[onclick="sortTable('${column}')"]`);
+            activeHeader.classList.add('sorted');
+            const activeIcon = activeHeader.querySelector('.sort-icon');
+            activeIcon.textContent = currentSort.ascending ? '▲' : '▼';
+            
+            // Sort rows
+            rows.sort((a, b) => {
+                let aValue, bValue;
+                
+                if (column === 'title') {
+                    aValue = a.dataset.title;
+                    bValue = b.dataset.title;
+                } else if (column === 'date') {
+                    aValue = new Date(a.dataset.date || '1970-01-01');
+                    bValue = new Date(b.dataset.date || '1970-01-01');
+                }
+                
+                if (aValue < bValue) return currentSort.ascending ? -1 : 1;
+                if (aValue > bValue) return currentSort.ascending ? 1 : -1;
+                return 0;
+            });
+            
+            // Re-append rows in sorted order
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
 </body>
 </html>
 '''
@@ -576,24 +990,15 @@ def generate_xml(articles):
         ET.SubElement(entry, 'title').text = article['title']
         ET.SubElement(entry, 'link').text = article['link']
         ET.SubElement(entry, 'published').text = article['published']
-        ET.SubElement(entry, 'fullText').text = article['full_text']
+        ET.SubElement(entry, 'description').text = article['full_text']
     
     # Pretty print XML
     xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent='  ')
     return xml_str
 
-def generate_json(articles):
-    """Generate JSON file for alternative consumption"""
-    data = {
-        'updated': datetime.now().isoformat(),
-        'count': len(articles),
-        'articles': articles
-    }
-    return json.dumps(data, indent=2, ensure_ascii=False)
-
 def main():
     print("Starting RSS feed processing...")
-    print(f"Target: {MAX_ARTICLES} latest articles")
+    print(f"Target: {ARTICLES_PER_SOURCE} latest articles from each source")
     print("-" * 50)
     
     # Process feeds
