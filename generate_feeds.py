@@ -14,9 +14,9 @@ FEED_SOURCES = [
         'type': 'rss'
     },
     {
-        'url': 'https://www.austrac.gov.au/news-and-media/media-release',
+        'url': 'https://www.austrac.gov.au/media-release/rss.xml',
         'name': 'AUSTRAC Media Releases',
-        'type': 'webpage'
+        'type': 'rss'
     },
     {
         'url': 'https://www.apra.gov.au/news-and-publications',
@@ -100,73 +100,6 @@ def fetch_full_text(url):
     except Exception as e:
         print(f"Error fetching full text from {url}: {e}")
         return f"Error fetching content: {str(e)}"
-
-def fetch_austrac_news():
-    """Scrape AUSTRAC media release page to create RSS-like entries"""
-    try:
-        url = 'https://www.austrac.gov.au/news-and-media/media-release'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
-        response = requests.get(url, headers=headers, timeout=30)  # Increased timeout to 30 seconds
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.content, 'html.parser')
-        articles = []
-        
-        # Find news items - AUSTRAC uses view-content structure
-        news_items = soup.select('.view-content .views-row, .view-media-release .views-row, .views-row')[:10]
-        
-        for item in news_items:
-            try:
-                title_elem = item.select_one('h3 a, h2 a, .title a, .views-field-title a')
-                link_elem = item.select_one('a')
-                
-                # Try multiple date selectors - dates are often ABOVE the title
-                date_elem = item.select_one(
-                    '.date, time, '
-                    '.views-field-created, .field--name-created, '
-                    '.views-field-field-date, .field--name-field-date, '
-                    '.views-field-field-media-release-date, '
-                    'span.date, div.date, p.date, '
-                    '.field--type-datetime, '
-                    '[class*="date"]'
-                )
-                
-                # If no date element found, try to extract from text content
-                date_text = ''
-                if date_elem:
-                    date_text = date_elem.get_text(strip=True)
-                    print(f"    Found date element: {date_text}")
-                else:
-                    # Look for date in the entire item's text (including above title)
-                    item_text = item.get_text()
-                    date_text = extract_date_from_text(item_text)
-                    if date_text:
-                        print(f"    Extracted date from item text: {date_text}")
-                
-                summary_elem = item.select_one('.summary, .views-field-body, .field--name-body, p')
-                
-                if title_elem and link_elem:
-                    article_url = link_elem.get('href', '')
-                    if article_url.startswith('/'):
-                        article_url = 'https://www.austrac.gov.au' + article_url
-                    
-                    article = {
-                        'title': title_elem.get_text(strip=True),
-                        'link': article_url,
-                        'published': date_text or '',
-                        'summary': summary_elem.get_text(strip=True)[:300] if summary_elem else '',
-                    }
-                    articles.append(article)
-            except Exception as e:
-                print(f"Error parsing AUSTRAC article: {e}")
-                continue
-        
-        return articles
-    except Exception as e:
-        print(f"Error fetching AUSTRAC news: {e}")
-        return []
 
 def fetch_apra_news():
     """Scrape APRA news page to create RSS-like entries"""
@@ -333,7 +266,15 @@ def fetch_apra_news():
 def parse_rss_feed(url):
     """Parse RSS feed and extract entries"""
     try:
-        feed = feedparser.parse(url)
+        # Fetch the feed with a timeout first
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()
+        
+        # Parse the fetched content
+        feed = feedparser.parse(response.content)
         articles = []
         
         for entry in feed.entries[:10]:  # Limit to 10 articles per feed
@@ -346,6 +287,9 @@ def parse_rss_feed(url):
             articles.append(article)
         
         return articles
+    except requests.Timeout:
+        print(f"Timeout error fetching RSS feed {url}")
+        return []
     except Exception as e:
         print(f"Error parsing RSS feed {url}: {e}")
         return []
@@ -360,9 +304,7 @@ def process_feeds():
         if source['type'] == 'rss':
             articles = parse_rss_feed(source['url'])
         elif source['type'] == 'webpage':
-            if 'austrac.gov.au' in source['url']:
-                articles = fetch_austrac_news()
-            elif 'apra.gov.au' in source['url']:
+            if 'apra.gov.au' in source['url']:
                 articles = fetch_apra_news()
             else:
                 continue
