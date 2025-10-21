@@ -70,7 +70,7 @@ def fetch_full_text(url):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers, timeout=30)  # Increased timeout to 30 seconds
         response.raise_for_status()
         
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -108,7 +108,7 @@ def fetch_austrac_news():
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers, timeout=30)  # Increased timeout to 30 seconds
         response.raise_for_status()
         
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -175,7 +175,7 @@ def fetch_apra_news():
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers, timeout=30)  # Increased timeout to 30 seconds
         response.raise_for_status()
         
         soup = BeautifulSoup(response.content, 'html.parser')
