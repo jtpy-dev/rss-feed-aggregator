@@ -5,6 +5,12 @@ from datetime import datetime
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # Configuration
 FEED_SOURCES = [
@@ -24,14 +30,14 @@ FEED_SOURCES = [
         'type': 'webpage'
     },
     {
-        'url': 'https://rss.app/feeds/rMlPOR4nHXy72VfZ.xml',
+        'url': 'https://www.asic.gov.au/newsroom/media-releases/',
         'name': 'ASIC Media Releases',
-        'type': 'rss'
+        'type': 'webpage-selenium'
     },
     {
-        'url': 'https://rss.app/feeds/xhH6bkOKqSo5Jhng.xml',
+        'url': 'https://www.rba.gov.au/media-releases/',
         'name': 'RBA Media Releases',
-        'type': 'rss'
+        'type': 'webpage'
     }
 ]
 
@@ -100,6 +106,103 @@ def fetch_full_text(url):
     except Exception as e:
         print(f"Error fetching full text from {url}: {e}")
         return f"Error fetching content: {str(e)}"
+
+def fetch_asic_news_selenium():
+    """Scrape ASIC media releases page using Selenium (JavaScript required)"""
+    driver = None
+    try:
+        # Set up Chrome options for headless mode
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--window-size=1920,1080')
+        chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
+        
+        # Initialize the driver
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.set_page_load_timeout(60)
+        
+        url = 'https://www.asic.gov.au/newsroom/media-releases/'
+        print(f"  Loading {url} with Selenium...")
+        driver.get(url)
+        
+        # Wait for the nr-list to be present (up to 30 seconds)
+        print("  Waiting for page to load...")
+        wait = WebDriverWait(driver, 30)
+        nr_list = wait.until(EC.presence_of_element_located((By.ID, "nr-list")))
+        
+        # Give JavaScript a moment to fully render
+        time.sleep(2)
+        
+        # Get the page source and parse with BeautifulSoup
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        
+        # Find the ul#nr-list
+        nr_list = soup.find('ul', id='nr-list')
+        
+        if not nr_list:
+            print("  ERROR: Could not find ul#nr-list even after JavaScript rendering")
+            return []
+        
+        articles = []
+        news_items = nr_list.find_all('li', recursive=False)
+        
+        print(f"  Found {len(news_items)} ASIC items in ul#nr-list")
+        
+        # Process up to 10 items
+        for item in news_items[:10]:
+            try:
+                # Find h3 > a
+                h3_tag = item.find('h3')
+                if not h3_tag:
+                    continue
+                
+                title_elem = h3_tag.find('a')
+                if not title_elem:
+                    continue
+                
+                article_url = title_elem.get('href', '')
+                if article_url.startswith('/'):
+                    article_url = 'https://www.asic.gov.au' + article_url
+                
+                title = title_elem.get_text(strip=True)
+                
+                # Try to find date
+                date_text = ''
+                info_div = item.find('div', class_='nh-list-info')
+                if info_div:
+                    date_text = extract_date_from_text(info_div.get_text())
+                
+                if not date_text:
+                    # Try to extract from full item text
+                    date_text = extract_date_from_text(item.get_text())
+                
+                article = {
+                    'title': title,
+                    'link': article_url,
+                    'published': date_text or '',
+                    'summary': '',
+                }
+                articles.append(article)
+                print(f"    Found ASIC article: {title[:70]}...")
+                
+            except Exception as e:
+                print(f"  Error parsing ASIC item: {e}")
+                continue
+        
+        print(f"  Successfully parsed {len(articles)} ASIC articles")
+        return articles
+        
+    except Exception as e:
+        print(f"Error fetching ASIC news with Selenium: {e}")
+        import traceback
+        traceback.print_exc()
+        return []
+    finally:
+        if driver:
+            driver.quit()
 
 def fetch_apra_news():
     """Scrape APRA news page to create RSS-like entries"""
@@ -263,36 +366,134 @@ def fetch_apra_news():
         print(f"Error fetching APRA news: {e}")
         return []
 
-def parse_rss_feed(url):
-    """Parse RSS feed and extract entries"""
+def fetch_rba_news():
+    """Scrape RBA media releases page to create RSS-like entries"""
     try:
-        # Fetch the feed with a timeout first
+        url = 'https://www.rba.gov.au/media-releases/'
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()
         
-        # Parse the fetched content
-        feed = feedparser.parse(response.content)
+        soup = BeautifulSoup(response.content, 'html.parser')
         articles = []
         
-        for entry in feed.entries[:10]:  # Limit to 10 articles per feed
-            article = {
-                'title': entry.get('title', 'No title'),
-                'link': entry.get('link', ''),
-                'published': entry.get('published', entry.get('updated', '')),
-                'summary': entry.get('summary', entry.get('description', ''))
-            }
-            articles.append(article)
+        # RBA uses <ul class="list-articles rss-mr-list">
+        media_releases_list = soup.select_one('ul.list-articles.rss-mr-list')
         
+        if not media_releases_list:
+            print("  ERROR: Could not find ul.list-articles.rss-mr-list container")
+            return []
+        
+        # Find all list items with class="item rss-mr-item"
+        news_items = media_releases_list.select('li.item.rss-mr-item')
+        
+        print(f"  Found {len(news_items)} potential RBA items in list-articles")
+        
+        # Limit to 10 articles
+        for item in news_items[:10]:
+            try:
+                # Find the title div and link inside it
+                title_div = item.select_one('div.title')
+                if not title_div:
+                    continue
+                
+                title_elem = title_div.find('a')
+                if not title_elem:
+                    continue
+                
+                article_url = title_elem.get('href', '')
+                if article_url.startswith('/'):
+                    article_url = 'https://www.rba.gov.au' + article_url
+                
+                title = title_elem.get_text(strip=True)
+                
+                # Try to find date in the item
+                date_elem = item.select_one('.date, time, span')
+                date_text = ''
+                if date_elem and date_elem != title_elem:
+                    date_text = date_elem.get_text(strip=True)
+                    print(f"    Found date element: {date_text}")
+                else:
+                    # Try to extract from item text
+                    item_text = item.get_text()
+                    date_text = extract_date_from_text(item_text)
+                    if date_text:
+                        print(f"    Extracted date from item text: {date_text}")
+                
+                article = {
+                    'title': title,
+                    'link': article_url,
+                    'published': date_text or '',
+                    'summary': '',
+                }
+                articles.append(article)
+                print(f"    Found RBA article: {title[:70]}...")
+                    
+            except Exception as e:
+                print(f"  Error parsing RBA item: {e}")
+                continue
+        
+        print(f"  Successfully parsed {len(articles)} RBA articles")
         return articles
-    except requests.Timeout:
-        print(f"Timeout error fetching RSS feed {url}")
-        return []
     except Exception as e:
-        print(f"Error parsing RSS feed {url}: {e}")
+        print(f"Error fetching RBA news: {e}")
         return []
+
+def parse_rss_feed(url):
+    """Parse RSS feed and extract entries with retry logic"""
+    max_attempts = 3
+    timeout = 60  # Increased to 60 seconds
+    
+    for attempt in range(max_attempts):
+        try:
+            # Fetch the feed with a timeout first
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+            
+            print(f"  Attempt {attempt + 1}/{max_attempts} to fetch RSS feed...")
+            response = requests.get(url, headers=headers, timeout=timeout)
+            response.raise_for_status()
+            
+            # Parse the fetched content
+            feed = feedparser.parse(response.content)
+            articles = []
+            
+            for entry in feed.entries[:10]:  # Limit to 10 articles per feed
+                article = {
+                    'title': entry.get('title', 'No title'),
+                    'link': entry.get('link', ''),
+                    'published': entry.get('published', entry.get('updated', '')),
+                    'summary': entry.get('summary', entry.get('description', ''))
+                }
+                articles.append(article)
+            
+            print(f"  Successfully fetched RSS feed on attempt {attempt + 1}")
+            return articles
+            
+        except requests.Timeout:
+            print(f"  Timeout error on attempt {attempt + 1}/{max_attempts}")
+            if attempt < max_attempts - 1:
+                wait_time = 5
+                print(f"  Waiting {wait_time} seconds before retry...")
+                time.sleep(wait_time)
+            else:
+                print(f"  Failed to fetch RSS feed after {max_attempts} attempts")
+                return []
+                
+        except Exception as e:
+            print(f"  Error on attempt {attempt + 1}/{max_attempts}: {e}")
+            if attempt < max_attempts - 1:
+                wait_time = 5
+                print(f"  Waiting {wait_time} seconds before retry...")
+                time.sleep(wait_time)
+            else:
+                print(f"  Failed to fetch RSS feed after {max_attempts} attempts: {e}")
+                return []
+    
+    return []
 
 def process_feeds():
     """Process all feeds and extract full text"""
@@ -303,9 +504,16 @@ def process_feeds():
         
         if source['type'] == 'rss':
             articles = parse_rss_feed(source['url'])
+        elif source['type'] == 'webpage-selenium':
+            if 'asic.gov.au' in source['url']:
+                articles = fetch_asic_news_selenium()
+            else:
+                continue
         elif source['type'] == 'webpage':
             if 'apra.gov.au' in source['url']:
                 articles = fetch_apra_news()
+            elif 'rba.gov.au' in source['url']:
+                articles = fetch_rba_news()
             else:
                 continue
         else:
