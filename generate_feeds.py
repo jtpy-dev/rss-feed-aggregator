@@ -5,12 +5,24 @@ from datetime import datetime
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import time
+import json
+import os
+import google.generativeai as genai
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+# Configure Gemini AI
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+    model = genai.GenerativeModel('gemini-2.0-flash-exp')
+else:
+    model = None
+    print("Warning: GEMINI_API_KEY not found. LLM features will be disabled.")
 
 # Configuration
 FEED_SOURCES = [
@@ -20,7 +32,7 @@ FEED_SOURCES = [
         'type': 'rss'
     },
     {
-        'url': 'https://www.austrac.gov.au/media-release/rss.xml',
+        'url': 'https://rss.app/feeds/k8R0Dag3ta5LtEQM.xml',
         'name': 'AUSTRAC Media Releases',
         'type': 'rss'
     },
@@ -41,9 +53,288 @@ FEED_SOURCES = [
     }
 ]
 
-ARTICLES_PER_SOURCE = 10  # Fetch 10 latest articles from each source
+ARTICLES_PER_SOURCE = 10  # Fetch 10 latest articles from each source per run
 OUTPUT_HTML = 'index.html'
 OUTPUT_XML = 'feed-data.xml'
+DATABASE_FILE = 'articles-database.json'
+DATA_COLLECTION_START_DATE = '22/10/2025'  # Date when we started collecting data
+
+def generate_summary(article_text, title):
+    """Generate a summary of the article using Gemini"""
+    if not model or not article_text:
+        return "Summary not available"
+    
+    try:
+        prompt = f"""Summarize this regulatory media article into 3-5 key bullet points. Focus on the most important information that compliance officers and business executives need to know.
+
+Article Title: {title}
+
+Article Text:
+{article_text[:4000]}
+
+Provide only the bullet points, no introduction or conclusion."""
+
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print(f"Error generating summary: {e}")
+        return "Summary generation failed"
+
+def generate_risk_rating(article_text, title, source):
+    """Generate risk rating and rationale using Gemini"""
+    if not model or not article_text:
+        return {"rating": "Not Rated", "rationale": "Risk assessment not available"}
+    
+    try:
+        prompt = f"""You are a senior corporate risk analyst. Your task is to evaluate this media article and assess the level of risk it represents using a 5×5 risk assessment matrix.
+
+Article Title: {title}
+Source: {source}
+
+Article Text:
+{article_text[:4000]}
+
+FRAMEWORK:
+Likelihood (1-5):
+1 – Rare: May occur only in exceptional circumstances
+2 – Unlikely: Could occur at some time, but not expected
+3 – Possible: Might occur occasionally under normal conditions
+4 – Likely: Will probably occur
+5 – Almost Certain: Expected to occur frequently
+
+Impact (1-5):
+1 – Insignificant: Negligible business impact
+2 – Minor: Small, contained impact
+3 – Moderate: Noticeable effect on operations
+4 – Major: Significant financial loss or operational disruption
+5 – Catastrophic: Critical business impact threatening viability
+
+Risk Matrix:
+- Low: Likelihood 1-2 AND Impact 1-2
+- Medium: Likelihood 3 OR Impact 3 (but not both high)
+- High: Likelihood 4+ OR Impact 4+ (or both at 3)
+- Extreme: Likelihood 5 AND Impact 5, or Likelihood 4-5 with Impact 5
+
+Provide your response in this exact format:
+LIKELIHOOD: [number]
+IMPACT: [number]
+RATING: [Low/Medium/High/Extreme]
+RATIONALE: [2-3 sentences explaining the rating based on the article]"""
+
+        response = model.generate_content(prompt)
+        response_text = response.text.strip()
+        
+        # Parse the response
+        rating = "Not Rated"
+        rationale = "Assessment unavailable"
+        
+        for line in response_text.split('\n'):
+            if line.startswith('RATING:'):
+                rating = line.replace('RATING:', '').strip()
+            elif line.startswith('RATIONALE:'):
+                rationale = line.replace('RATIONALE:', '').strip()
+        
+        # If rationale is still default, try to extract from full response
+        if rationale == "Assessment unavailable" and len(response_text) > 50:
+            lines = [l for l in response_text.split('\n') if l.strip()]
+            if len(lines) >= 4:
+                rationale = ' '.join(lines[3:])[:300]
+        
+        return {"rating": rating, "rationale": rationale}
+    
+    except Exception as e:
+        print(f"Error generating risk rating: {e}")
+        return {"rating": "Assessment Failed", "rationale": "Risk assessment could not be completed"}
+
+def generate_industry(article_text, title, source):
+    """Generate industry classification and rationale using Gemini"""
+    if not model or not article_text:
+        return {"industry": "Other", "rationale": "Industry classification not available"}
+    
+    try:
+        prompt = f"""You are a corporate risk and market intelligence analyst. Classify this article into one of the 11 GICS sectors.
+
+Article Title: {title}
+Source: {source}
+
+Article Text:
+{article_text[:4000]}
+
+GICS SECTORS:
+1. Energy
+2. Materials
+3. Industrials
+4. Consumer Discretionary
+5. Consumer Staples
+6. Health Care
+7. Financials
+8. Information Technology
+9. Communication Services
+10. Utilities
+11. Real Estate
+12. Other (if none apply)
+
+Provide your response in this exact format:
+INDUSTRY: [sector name]
+RATIONALE: [2-3 sentences explaining why this sector was chosen based on the article content]"""
+
+        response = model.generate_content(prompt)
+        response_text = response.text.strip()
+        
+        # Parse the response
+        industry = "Other"
+        rationale = "Classification unavailable"
+        
+        for line in response_text.split('\n'):
+            if line.startswith('INDUSTRY:'):
+                industry = line.replace('INDUSTRY:', '').strip()
+            elif line.startswith('RATIONALE:'):
+                rationale = line.replace('RATIONALE:', '').strip()
+        
+        # If rationale is still default, try to extract from full response
+        if rationale == "Classification unavailable" and len(response_text) > 50:
+            lines = [l for l in response_text.split('\n') if l.strip()]
+            if len(lines) >= 2:
+                rationale = ' '.join(lines[1:])[:300]
+        
+        return {"industry": industry, "rationale": rationale}
+    
+    except Exception as e:
+        print(f"Error generating industry classification: {e}")
+        return {"industry": "Other", "rationale": "Industry classification could not be completed"}
+
+def load_database():
+    """Load existing articles database from JSON file"""
+    if os.path.exists(DATABASE_FILE):
+        try:
+            with open(DATABASE_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                print(f"Loaded {len(data)} existing articles from database")
+                return data
+        except Exception as e:
+            print(f"Error loading database: {e}")
+            return []
+    else:
+        print("No existing database found, starting fresh")
+        return []
+
+def save_database(articles):
+    """Save articles database to JSON file"""
+    try:
+        with open(DATABASE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(articles, f, ensure_ascii=False, indent=2)
+        print(f"Saved {len(articles)} articles to database")
+    except Exception as e:
+        print(f"Error saving database: {e}")
+
+def merge_articles(existing_articles, new_articles):
+    """Merge new articles with existing ones, avoiding duplicates"""
+    # Create a set of existing article URLs for fast lookup
+    existing_urls = {article['link'] for article in existing_articles}
+    
+    # Track which articles are new
+    added_count = 0
+    new_article_urls = []
+    
+    # Add only new articles that aren't already in the database
+    for article in new_articles:
+        if article['link'] not in existing_urls:
+            existing_articles.append(article)
+            existing_urls.add(article['link'])
+            new_article_urls.append(article['link'])
+            added_count += 1
+    
+    print(f"Added {added_count} new articles to database")
+    print(f"Total articles in database: {len(existing_articles)}")
+    
+    # Sort by date (newest first)
+    existing_articles.sort(key=lambda x: parse_date(x['published']), reverse=True)
+    
+    return existing_articles, new_article_urls
+
+def analyze_articles_with_ai(articles, new_article_urls):
+    """Run AI analysis only on articles that don't have it yet (typically new articles)"""
+    if not model:
+        print("\nWarning: Gemini API not configured. Skipping AI analysis.")
+        print("Set GEMINI_API_KEY environment variable to enable AI features.")
+        # Set default values for all articles without AI analysis
+        for article in articles:
+            if not article.get('ai_summary'):
+                article['ai_summary'] = "AI analysis not available (API key not configured)"
+                article['risk_rating'] = "Not Rated"
+                article['risk_rationale'] = "Risk assessment unavailable"
+                article['industry'] = "Other"
+                article['industry_rationale'] = "Industry classification unavailable"
+        return articles
+    
+    # Find articles that need AI analysis
+    articles_to_analyze = [
+        article for article in articles 
+        if article['link'] in new_article_urls or not article.get('ai_summary')
+    ]
+    
+    if not articles_to_analyze:
+        print("\nNo new articles to analyze. All articles already have AI analysis.")
+        return articles
+    
+    print(f"\n{'='*50}")
+    print(f"Running AI analysis on {len(articles_to_analyze)} new articles...")
+    print(f"{'='*50}")
+    
+    analyzed_count = 0
+    for article in articles_to_analyze:
+        # Skip if article doesn't have full text or text is too short
+        if not article.get('full_text') or len(article.get('full_text', '')) < 100:
+            print(f"  Skipping (insufficient text): {article['title'][:50]}...")
+            article['ai_summary'] = "Insufficient article text for analysis"
+            article['risk_rating'] = "Not Rated"
+            article['risk_rationale'] = "Insufficient text for assessment"
+            article['industry'] = "Other"
+            article['industry_rationale'] = "Insufficient text for classification"
+            continue
+        
+        try:
+            print(f"\n  Analyzing: {article['title'][:60]}...")
+            
+            # Generate summary
+            print("    → Generating summary...")
+            article['ai_summary'] = generate_summary(article['full_text'], article['title'])
+            time.sleep(1)  # Rate limit
+            
+            # Generate risk rating
+            print("    → Assessing risk...")
+            risk_data = generate_risk_rating(article['full_text'], article['title'], article['source'])
+            article['risk_rating'] = risk_data['rating']
+            article['risk_rationale'] = risk_data['rationale']
+            time.sleep(1)  # Rate limit
+            
+            # Generate industry classification
+            print("    → Classifying industry...")
+            industry_data = generate_industry(article['full_text'], article['title'], article['source'])
+            article['industry'] = industry_data['industry']
+            article['industry_rationale'] = industry_data['rationale']
+            time.sleep(1)  # Rate limit
+            
+            analyzed_count += 1
+            print(f"    ✓ Complete (Risk: {article['risk_rating']}, Industry: {article['industry']})")
+            
+        except Exception as e:
+            print(f"    ✗ Error during AI analysis: {e}")
+            # Set fallback values
+            if not article.get('ai_summary'):
+                article['ai_summary'] = "Analysis failed"
+            if not article.get('risk_rating'):
+                article['risk_rating'] = "Assessment Failed"
+                article['risk_rationale'] = "Error during assessment"
+            if not article.get('industry'):
+                article['industry'] = "Other"
+                article['industry_rationale'] = "Error during classification"
+    
+    print(f"\n{'='*50}")
+    print(f"✓ AI analysis complete: {analyzed_count} articles analyzed")
+    print(f"{'='*50}\n")
+    
+    return articles
 
 def extract_date_from_text(text):
     """Extract the FIRST date from text content"""
@@ -496,7 +787,7 @@ def parse_rss_feed(url):
     return []
 
 def process_feeds():
-    """Process all feeds and extract full text"""
+    """Process all feeds and extract full text for new articles"""
     all_articles = []
     
     for source in FEED_SOURCES:
@@ -532,11 +823,18 @@ def process_feeds():
                     article['published'] = date_from_text
                     print(f"    Extracted date from text: {date_from_text}")
             
+            # Initialize AI fields as empty - will be filled later only for new articles
+            article['ai_summary'] = None
+            article['risk_rating'] = None
+            article['risk_rationale'] = None
+            article['industry'] = None
+            article['industry_rationale'] = None
+            
             time.sleep(0.5)  # Be polite, don't hammer servers
         
         all_articles.extend(articles)
     
-    # Sort by date (newest first) - no limit, showing 10 from each source
+    # Sort by date (newest first) - keep all articles
     all_articles.sort(key=lambda x: parse_date(x['published']), reverse=True)
     return all_articles
 
@@ -853,6 +1151,130 @@ def generate_html(articles):
             background: var(--text-secondary);
         }
 
+        .toggle-cell {
+            text-align: center;
+            padding: 0.5rem !important;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-btn:hover {
+            color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .toggle-icon {
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.rotated {
+            transform: rotate(90deg);
+        }
+
+        .full-text-row {
+            background: var(--bg-secondary);
+        }
+
+        .full-text-row td {
+            padding: 0 !important;
+        }
+
+        .full-text-row .article-content {
+            margin: 0.5rem 1rem 1rem 1rem;
+            max-height: 30rem;
+        }
+
+        .summary-text {
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .industry-badge, .risk-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .risk-badge.risk-low {
+            background: #14532d;
+            color: #86efac;
+        }
+
+        .risk-badge.risk-medium {
+            background: #713f12;
+            color: #fde047;
+        }
+
+        .risk-badge.risk-high {
+            background: #7c2d12;
+            color: #fca5a5;
+        }
+
+        .tooltip-container {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 400;
+            line-height: 1.5;
+            white-space: normal;
+            width: 250px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            z-index: 1000;
+            pointer-events: none;
+            transition: opacity 0.3s, visibility 0.3s;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--bg-primary);
+        }
+
+        .tooltip-container:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
         .footer {
             margin-top: 3rem;
             padding: 2rem;
@@ -988,6 +1410,9 @@ def generate_html(articles):
     <div class="container">
         <div class="header-section">
             <h1 class="page-title">Latest Regulatory Updates</h1>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+                📊 Data collection started: ''' + DATA_COLLECTION_START_DATE + ''' | Total articles: ''' + str(len(articles)) + '''
+            </p>
         </div>
 
         <div class="filter-section">
@@ -1007,15 +1432,24 @@ def generate_html(articles):
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 28%;" onclick="sortTable('title')">
+                            <th style="width: 3%;">Details</th>
+                            <th style="width: 22%;" onclick="sortTable('title')">
                                 Title
                                 <span class="sort-icon">▼</span>
                             </th>
-                            <th style="width: 12%;" onclick="sortTable('date')">
+                            <th style="width: 8%;" onclick="sortTable('date')">
                                 Date
                                 <span class="sort-icon">▼</span>
                             </th>
-                            <th style="width: 60%;">Content</th>
+                            <th style="width: 25%;">Summary</th>
+                            <th style="width: 12%;" onclick="sortTable('industry')">
+                                Industry
+                                <span class="sort-icon">▼</span>
+                            </th>
+                            <th style="width: 10%;" onclick="sortTable('risk')">
+                                Risk Rating
+                                <span class="sort-icon">▼</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="articleTableBody">
@@ -1023,8 +1457,32 @@ def generate_html(articles):
     
     for article in articles:
         source_class = article['source'].lower().split()[0]
+        
+        # Escape quotes and special characters for HTML attributes
+        risk_rating = article.get('risk_rating', 'Not Rated')
+        risk_rationale = article.get('risk_rationale', 'Risk assessment unavailable').replace('"', '&quot;').replace("'", '&#39;')
+        industry = article.get('industry', 'Other')
+        industry_rationale = article.get('industry_rationale', 'Industry classification unavailable').replace('"', '&quot;').replace("'", '&#39;')
+        ai_summary = article.get('ai_summary', 'Summary not available')
+        full_text = article.get('full_text', 'Content not available')
+        
+        # Generate unique ID for this article's collapsible section
+        article_id = f"article-{abs(hash(article['link']))}"
+        
+        # Determine risk color class
+        risk_class = 'risk-low'
+        if risk_rating.lower() in ['high', 'extreme']:
+            risk_class = 'risk-high'
+        elif risk_rating.lower() == 'medium':
+            risk_class = 'risk-medium'
+        
         html += f'''
-                        <tr class="article-row" data-source="{article['source']}" data-title="{article['title'].lower()}" data-date="{article['published']}">
+                        <tr class="article-row" data-source="{article['source']}" data-title="{article['title'].lower()}" data-date="{article['published']}" data-industry="{industry.lower()}" data-risk="{risk_rating.lower()}">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('{article_id}')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="{article_id}-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag {source_class}">{article['source']}</span>
                                 <a href="{article['link']}" target="_blank" class="article-title">{article['title']}</a>
@@ -1033,7 +1491,24 @@ def generate_html(articles):
                                 <span class="article-date">{format_date(article['published'])}</span>
                             </td>
                             <td>
-                                <div class="article-content">{article['full_text']}</div>
+                                <div class="summary-text">{ai_summary}</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    {industry}
+                                    <span class="tooltip">{industry_rationale}</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge {risk_class} tooltip-container">
+                                    {risk_rating}
+                                    <span class="tooltip">{risk_rationale}</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="{article_id}" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">{full_text}</div>
                             </td>
                         </tr>
 '''
@@ -1045,17 +1520,33 @@ def generate_html(articles):
         </div>
 
         <div class="footer">
-            <p>Displaying latest articles from ACCC, ASIC, APRA, AUSTRAC, and RBA</p>
+            <p>Displaying all collected articles from ACCC, ASIC, APRA, AUSTRAC, and RBA</p>
             <div class="footer-divider"></div>
-            <p>Automatically updated every 12 hours</p>
+            <p>Automatically updated every 12 hours • Articles accumulated since ''' + DATA_COLLECTION_START_DATE + '''</p>
         </div>
     </div>
 
     <script>
         let currentSort = { column: null, ascending: true };
 
+        function toggleFullText(articleId) {
+            const fullTextRow = document.getElementById(articleId);
+            const icon = document.getElementById(articleId + '-icon');
+            
+            if (fullTextRow.style.display === 'none') {
+                fullTextRow.style.display = 'table-row';
+                icon.textContent = '▼';
+                icon.classList.add('rotated');
+            } else {
+                fullTextRow.style.display = 'none';
+                icon.textContent = '▶';
+                icon.classList.remove('rotated');
+            }
+        }
+
         function filterArticles(source) {
             const rows = document.querySelectorAll('.article-row');
+            const fullTextRows = document.querySelectorAll('.full-text-row');
             const buttons = document.querySelectorAll('.filter-btn');
             
             buttons.forEach(btn => {
@@ -1066,12 +1557,19 @@ def generate_html(articles):
                 }
             });
             
-            rows.forEach(row => {
+            rows.forEach((row, index) => {
                 const rowSource = row.dataset.source;
+                const correspondingFullTextRow = fullTextRows[index];
+                
                 if (source === 'all' || rowSource === source) {
                     row.classList.remove('hidden');
+                    // Keep full-text row's display state (might be open or closed)
                 } else {
                     row.classList.add('hidden');
+                    // Hide corresponding full-text row
+                    if (correspondingFullTextRow) {
+                        correspondingFullTextRow.classList.add('hidden');
+                    }
                 }
             });
         }
@@ -1096,9 +1594,11 @@ def generate_html(articles):
             });
             
             const activeHeader = document.querySelector(`th[onclick="sortTable('${column}')"]`);
-            activeHeader.classList.add('sorted');
-            const activeIcon = activeHeader.querySelector('.sort-icon');
-            activeIcon.textContent = currentSort.ascending ? '▲' : '▼';
+            if (activeHeader) {
+                activeHeader.classList.add('sorted');
+                const activeIcon = activeHeader.querySelector('.sort-icon');
+                activeIcon.textContent = currentSort.ascending ? '▲' : '▼';
+            }
             
             // Sort rows
             rows.sort((a, b) => {
@@ -1110,6 +1610,14 @@ def generate_html(articles):
                 } else if (column === 'date') {
                     aValue = new Date(a.dataset.date || '1970-01-01');
                     bValue = new Date(b.dataset.date || '1970-01-01');
+                } else if (column === 'industry') {
+                    aValue = a.dataset.industry || 'other';
+                    bValue = b.dataset.industry || 'other';
+                } else if (column === 'risk') {
+                    // Risk rating sorting: Extreme > High > Medium > Low > Not Rated
+                    const riskOrder = { 'extreme': 5, 'high': 4, 'medium': 3, 'low': 2, 'not rated': 1, 'assessment failed': 0 };
+                    aValue = riskOrder[a.dataset.risk] || 0;
+                    bValue = riskOrder[b.dataset.risk] || 0;
                 }
                 
                 if (aValue < bValue) return currentSort.ascending ? -1 : 1;
@@ -1117,8 +1625,15 @@ def generate_html(articles):
                 return 0;
             });
             
-            // Re-append rows in sorted order
-            rows.forEach(row => tbody.appendChild(row));
+            // Re-append rows with their corresponding full-text rows
+            rows.forEach(row => {
+                tbody.appendChild(row);
+                const articleId = row.querySelector('.toggle-btn').getAttribute('onclick').match(/'(.+)'/)[1];
+                const fullTextRow = document.getElementById(articleId);
+                if (fullTextRow) {
+                    tbody.appendChild(fullTextRow);
+                }
+            });
         }
     </script>
 </body>
@@ -1136,11 +1651,16 @@ def generate_xml(articles):
     for article in articles:
         entry = ET.SubElement(root, 'entry')
         
-        ET.SubElement(entry, 'source').text = article['source']
-        ET.SubElement(entry, 'title').text = article['title']
-        ET.SubElement(entry, 'link').text = article['link']
-        ET.SubElement(entry, 'published').text = article['published']
-        ET.SubElement(entry, 'description').text = article['full_text']
+        ET.SubElement(entry, 'source').text = article.get('source', '')
+        ET.SubElement(entry, 'title').text = article.get('title', '')
+        ET.SubElement(entry, 'link').text = article.get('link', '')
+        ET.SubElement(entry, 'published').text = article.get('published', '')
+        ET.SubElement(entry, 'summary').text = article.get('ai_summary', '')
+        ET.SubElement(entry, 'industry').text = article.get('industry', 'Other')
+        ET.SubElement(entry, 'industry_rationale').text = article.get('industry_rationale', '')
+        ET.SubElement(entry, 'risk_rating').text = article.get('risk_rating', 'Not Rated')
+        ET.SubElement(entry, 'risk_rationale').text = article.get('risk_rationale', '')
+        ET.SubElement(entry, 'full_text').text = article.get('full_text', '')
     
     # Pretty print XML
     xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent='  ')
@@ -1148,31 +1668,53 @@ def generate_xml(articles):
 
 def main():
     print("Starting RSS feed processing...")
-    print(f"Target: {ARTICLES_PER_SOURCE} latest articles from each source")
+    print(f"Target: {ARTICLES_PER_SOURCE} latest articles from each source per run")
     print("-" * 50)
     
-    # Process feeds
-    articles = process_feeds()
+    # Load existing database
+    existing_articles = load_database()
+    
+    # Process feeds to get new articles
+    print("\nFetching new articles...")
+    new_articles = process_feeds()
     
     print("-" * 50)
-    print(f"Total articles collected: {len(articles)}")
+    print(f"New articles fetched: {len(new_articles)}")
+    
+    # Merge with existing articles
+    print("\nMerging with existing database...")
+    all_articles, new_article_urls = merge_articles(existing_articles, new_articles)
+    
+    # Run AI analysis ONLY on new articles that don't have analysis yet
+    if new_article_urls:
+        all_articles = analyze_articles_with_ai(all_articles, new_article_urls)
+    else:
+        print("\nNo new articles to analyze.")
+    
+    # Save updated database
+    print("\nSaving database...")
+    save_database(all_articles)
+    
+    print("-" * 50)
+    print(f"Total articles in database: {len(all_articles)}")
     
     # Generate HTML
-    print("Generating HTML...")
-    html = generate_html(articles)
+    print("\nGenerating HTML...")
+    html = generate_html(all_articles)
     with open(OUTPUT_HTML, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f"✓ HTML saved to {OUTPUT_HTML}")
     
     # Generate XML
     print("Generating XML...")
-    xml = generate_xml(articles)
+    xml = generate_xml(all_articles)
     with open(OUTPUT_XML, 'w', encoding='utf-8') as f:
         f.write(xml)
     print(f"✓ XML saved to {OUTPUT_XML}")
     
     print("-" * 50)
     print("✅ All files generated successfully!")
+    print(f"Database contains {len(all_articles)} total articles")
 
 if __name__ == "__main__":
     main()
