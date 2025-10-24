@@ -272,6 +272,130 @@
             background: var(--text-secondary);
         }
 
+        .toggle-cell {
+            text-align: center;
+            padding: 0.5rem !important;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-btn:hover {
+            color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .toggle-icon {
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.rotated {
+            transform: rotate(90deg);
+        }
+
+        .full-text-row {
+            background: var(--bg-secondary);
+        }
+
+        .full-text-row td {
+            padding: 0 !important;
+        }
+
+        .full-text-row .article-content {
+            margin: 0.5rem 1rem 1rem 1rem;
+            max-height: 30rem;
+        }
+
+        .summary-text {
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .industry-badge, .risk-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .risk-badge.risk-low {
+            background: #14532d;
+            color: #86efac;
+        }
+
+        .risk-badge.risk-medium {
+            background: #713f12;
+            color: #fde047;
+        }
+
+        .risk-badge.risk-high {
+            background: #7c2d12;
+            color: #fca5a5;
+        }
+
+        .tooltip-container {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 400;
+            line-height: 1.5;
+            white-space: normal;
+            width: 250px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            z-index: 1000;
+            pointer-events: none;
+            transition: opacity 0.3s, visibility 0.3s;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--bg-primary);
+        }
+
+        .tooltip-container:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
         .footer {
             margin-top: 3rem;
             padding: 2rem;
@@ -398,7 +522,7 @@
         <div class="nav-container">
             <div class="logo">Financial Regulators Feed</div>
             <div class="nav-right">
-                <span class="last-updated-badge">Last Updated: 24 Oct 2025 03:16</span>
+                <span class="last-updated-badge">Last Updated: 24 Oct 2025 13:11</span>
                 <a href="feed-data.xml" class="nav-link" download>Export XML</a>
             </div>
         </div>
@@ -407,6 +531,9 @@
     <div class="container">
         <div class="header-section">
             <h1 class="page-title">Latest Regulatory Updates</h1>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+                📊 Data collection started: 22/10/2025 | Total articles: 40
+            </p>
         </div>
 
         <div class="filter-section">
@@ -426,20 +553,34 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 28%;" onclick="sortTable('title')">
+                            <th style="width: 3%;">Details</th>
+                            <th style="width: 22%;" onclick="sortTable('title')">
                                 Title
                                 <span class="sort-icon">▼</span>
                             </th>
-                            <th style="width: 12%;" onclick="sortTable('date')">
+                            <th style="width: 8%;" onclick="sortTable('date')">
                                 Date
                                 <span class="sort-icon">▼</span>
                             </th>
-                            <th style="width: 60%;">Content</th>
+                            <th style="width: 25%;">Summary</th>
+                            <th style="width: 12%;" onclick="sortTable('industry')">
+                                Industry
+                                <span class="sort-icon">▼</span>
+                            </th>
+                            <th style="width: 10%;" onclick="sortTable('risk')">
+                                Risk Rating
+                                <span class="sort-icon">▼</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="articleTableBody">
 
-                        <tr class="article-row" data-source="APRA News" data-title="apra revises governance proposals following industry consultation" data-date="24 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="apra revises governance proposals following industry consultation" data-date="24 October 2025" data-industry="other" data-risk="medium">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-1233799306009033167')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-1233799306009033167-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/apra-revises-governance-proposals-following-industry-consultation" target="_blank" class="article-title">APRA revises governance proposals following industry consultation</a>
@@ -448,6 +589,27 @@
                                 <span class="article-date">24 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">*   **APRA is revising its proposed governance framework for banks, insurers, and superannuation trustees based on industry feedback.** This includes modifying initial proposals deemed too restrictive for boards.
+*   **Key changes include:** A hard 12-year tenure limit for non-executive directors (with limited short extensions), and the abandonment of proposals for inter-group independent director restrictions and mandatory early engagement with APRA on responsible person appointments/succession planning.
+*   **APRA will clarify/adjust proposals** relating to director skills, perceived conflicts of interest, and publication of registers of relevant interests and duties.
+*   **Revised prudential standards and guidance will be released for further consultation in the first half of next year.** Compliance officers should monitor for these updates and prepare for potential adjustments to governance practices.
+*   **APRA emphasizes its commitment to improving governance standards to ensure financial stability and sound risk management.** Expect continued scrutiny of governance practices within regulated industries.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-medium tooltip-container">
+                                    Medium
+                                    <span class="tooltip">APRA revising governance proposals is possible under normal conditions, as they regularly update regulations. The impact is moderate because while changes to governance can affect operations, APRA has considered industry feedback to minimize undue constraint.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-1233799306009033167" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Releases
 APRA revises governance proposals following industry consultation
 Friday 24 October 2025
@@ -482,7 +644,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="accc proposes to allow continued collaboration to support australians' access to cash" data-date="Thu, 23 Oct 2025 22:25:38 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="accc proposes to allow continued collaboration to support australians' access to cash" data-date="Thu, 23 Oct 2025 22:25:38 +0000" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-6635489738265541492')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-6635489738265541492-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/accc-proposes-to-allow-continued-collaboration-to-support-australians-access-to-cash" target="_blank" class="article-title">ACCC proposes to allow continued collaboration to support Australians' access to cash</a>
@@ -491,6 +658,23 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">23 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-6635489738265541492" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 24 October 2025
 Topics
@@ -547,7 +731,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="cuscal's proposed acquisition of indue not opposed" data-date="Thu, 23 Oct 2025 22:17:23 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="cuscal's proposed acquisition of indue not opposed" data-date="Thu, 23 Oct 2025 22:17:23 +0000" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-5408614740418311770')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-5408614740418311770-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/cuscals-proposed-acquisition-of-indue-not-opposed" target="_blank" class="article-title">Cuscal's proposed acquisition of Indue not opposed</a>
@@ -556,6 +745,23 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">23 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-5408614740418311770" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 24 October 2025
 Topics
@@ -590,7 +796,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="accc opposes keg pooling supplier microstar's proposed acquisition of konvoy assets" data-date="Thu, 23 Oct 2025 00:02:19 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="accc opposes keg pooling supplier microstar's proposed acquisition of konvoy assets" data-date="Thu, 23 Oct 2025 00:02:19 +0000" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-985957014200280408')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-985957014200280408-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/accc-opposes-keg-pooling-supplier-microstars-proposed-acquisition-of-konvoy-assets" target="_blank" class="article-title">ACCC opposes keg pooling supplier MicroStar's proposed acquisition of Konvoy assets</a>
@@ -599,6 +810,23 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">23 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-985957014200280408" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 23 October 2025
 Topics
@@ -635,7 +863,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="apra proposes more accessible pathway to irb accreditation for banks" data-date="23 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="apra proposes more accessible pathway to irb accreditation for banks" data-date="23 October 2025" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-2902353821193001237')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-2902353821193001237-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/apra-proposes-more-accessible-pathway-to-irb-accreditation-for-banks-0" target="_blank" class="article-title">APRA proposes more accessible pathway to IRB accreditation for banks</a>
@@ -644,6 +877,23 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">23 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-2902353821193001237" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Releases
 APRA proposes more accessible pathway to IRB accreditation for banks
 Thursday 23 October 2025
@@ -683,7 +933,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="apra refines proposals to facilitate easier access to alternative reinsurance arrangements" data-date="22 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="apra refines proposals to facilitate easier access to alternative reinsurance arrangements" data-date="22 October 2025" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-9145553991230406769')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-9145553991230406769-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/apra-refines-proposals-to-facilitate-easier-access-to-alternative-reinsurance" target="_blank" class="article-title">APRA refines proposals to facilitate easier access to alternative reinsurance arrangements</a>
@@ -692,6 +947,23 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">22 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-9145553991230406769" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Releases
 APRA refines proposals to facilitate easier access to alternative reinsurance arrangements
 Wednesday 22 October 2025
@@ -717,7 +989,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="deputy chair margaret cole - remarks to the fsc innovation in retirement conference" data-date="16 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="deputy chair margaret cole - remarks to the fsc innovation in retirement conference" data-date="16 October 2025" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-3232753895043569076')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-3232753895043569076-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/deputy-chair-margaret-cole-remarks-to-fsc-innovation-retirement-conference" target="_blank" class="article-title">Deputy Chair Margaret Cole - Remarks to the FSC Innovation in Retirement conference</a>
@@ -726,6 +1003,23 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">16 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-3232753895043569076" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Speeches
 Deputy Chair Margaret Cole - Remarks to the FSC Innovation in Retirement conference
 Thursday 16 October 2025
@@ -813,7 +1107,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="apra releases latest points of presence statistics for authorised deposit-taking institutions" data-date="16 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="apra releases latest points of presence statistics for authorised deposit-taking institutions" data-date="16 October 2025" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-491737017716271339')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-491737017716271339-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/apra-releases-latest-points-of-presence-statistics-for-authorised-deposit-1" target="_blank" class="article-title">APRA releases latest Points of Presence Statistics for authorised deposit-taking institutions</a>
@@ -822,6 +1121,23 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">16 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-491737017716271339" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Releases
 APRA releases latest Points of Presence Statistics for authorised deposit-taking institutions
 Thursday 16 October 2025
@@ -848,7 +1164,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="apra confirms westpac has met the obligations of the court enforceable undertaking" data-date="15 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="apra confirms westpac has met the obligations of the court enforceable undertaking" data-date="15 October 2025" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-3850984688922330017')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-3850984688922330017-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/apra-confirms-westpac-has-met-obligations-of-court-enforceable-undertaking" target="_blank" class="article-title">APRA confirms Westpac has met the obligations of the Court Enforceable Undertaking</a>
@@ -857,6 +1178,23 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">15 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-3850984688922330017" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Releases
 APRA confirms Westpac has met the obligations of the Court Enforceable Undertaking
 Wednesday 15 October 2025
@@ -887,7 +1225,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="apra launches innovate reconciliation action plan 2025-27" data-date="13 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="apra launches innovate reconciliation action plan 2025-27" data-date="13 October 2025" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-8631469069055179969')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-8631469069055179969-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/apra-launches-innovate-reconciliation-action-plan-2025-27" target="_blank" class="article-title">APRA launches Innovate Reconciliation Action Plan 2025-27</a>
@@ -896,6 +1239,23 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">13 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-8631469069055179969" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Releases
 APRA launches Innovate Reconciliation Action Plan 2025-27
 Monday 13 October 2025
@@ -924,7 +1284,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="apra executive board member suzanne smith - remarks to the ica conference 2025" data-date="10 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="apra executive board member suzanne smith - remarks to the ica conference 2025" data-date="10 October 2025" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-3023351827312766391')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-3023351827312766391-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/apra-executive-board-member-suzanne-smith-remarks-to-ica-conference-2025" target="_blank" class="article-title">APRA Executive Board Member Suzanne Smith - Remarks to the ICA conference 2025</a>
@@ -933,6 +1298,23 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">10 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-3023351827312766391" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Speeches
 APRA Executive Board Member Suzanne Smith - Remarks to the ICA conference 2025
 Friday 10 October 2025
@@ -999,7 +1381,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="yamaha's proposed acquisition of telwater raises competition concerns" data-date="Thu, 09 Oct 2025 04:09:40 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="yamaha's proposed acquisition of telwater raises competition concerns" data-date="Thu, 09 Oct 2025 04:09:40 +0000" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-3947697735451478284')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-3947697735451478284-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/yamahas-proposed-acquisition-of-telwater-raises-competition-concerns" target="_blank" class="article-title">Yamaha's proposed acquisition of Telwater raises competition concerns</a>
@@ -1008,6 +1395,23 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">09 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-3947697735451478284" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 9 October 2025
 Topics
@@ -1052,7 +1456,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="opening statement to senate economics legislation committee – october 2025" data-date="9 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="opening statement to senate economics legislation committee – october 2025" data-date="9 October 2025" data-industry="financials" data-risk="medium">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-5334401490603381749')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-5334401490603381749-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/opening-statement-to-senate-economics-legislation-committee-october-2025" target="_blank" class="article-title">Opening Statement to Senate Economics Legislation Committee – October 2025</a>
@@ -1061,6 +1470,23 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">09 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Financials
+                                    <span class="tooltip">The article discusses the Australian Prudential Regulation Authority (APRA) and its role in maintaining the stability of banks, insurers, and superannuation trustees. This falls squarely within the purview of the Financials sector, which includes institutions involved in banking, insurance, and investment management.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-medium tooltip-container">
+                                    Medium
+                                    <span class="tooltip">The article highlights ongoing geopolitical volatility and cyber threats, suggesting a &quot;possible&quot; likelihood of these impacting the Australian financial system. While APRA indicates the system is stable, the increasing scrutiny of superannuation funds and governance reforms signal a &quot;moderate&quot; potential effect on operations if these issues are not adequately addressed.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-5334401490603381749" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Opening statements
 Opening Statement to Senate Economics Legislation Committee – October 2025
 Thursday 9 October 2025
@@ -1101,7 +1527,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="APRA News" data-title="apra disqualifies two directors of xinja bank under financial accountability regime" data-date="9 October 2025">
+                        <tr class="article-row" data-source="APRA News" data-title="apra disqualifies two directors of xinja bank under financial accountability regime" data-date="9 October 2025" data-industry="financials" data-risk="medium">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-9125890791017129397')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-9125890791017129397-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag apra">APRA News</span>
                                 <a href="https://www.apra.gov.au/news-and-publications/apra-disqualifies-two-directors-of-xinja-bank-under-far" target="_blank" class="article-title">APRA disqualifies two directors of Xinja Bank under Financial Accountability Regime</a>
@@ -1110,6 +1541,27 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">09 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">*   **First FAR Disqualifications:** APRA disqualified the former CEO (8 years) and a non-executive director (10 years) of Xinja Bank, marking the first disqualifications under the Financial Accountability Regime (FAR).
+*   **Misleading Capital Reporting:** The disqualifications stem from "side agreements" with investors that undermined Xinja's reported CET1 capital position to APRA, leading to a breach of accountability obligations and misleading the regulator.
+*   **Breach of Accountability:** Both individuals failed to act with honesty and integrity, and failed to deal with APRA in an open, constructive, and cooperative manner, violating their obligations as accountable persons.
+*   **Serious Consequences for Non-Compliance:** APRA is sending a clear message that it will hold accountable persons to account for failings in managing capital adequacy and reporting accurately to the regulator.
+*   **Importance of Open Communication:** The case highlights the crucial role of open, constructive, and cooperative engagement with APRA, especially regarding capital adequacy matters.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Financials
+                                    <span class="tooltip">The article discusses the disqualification of directors from Xinja Bank by the Australian Prudential Regulation Authority (APRA) due to failures in capital reporting and compliance. This directly relates to the regulatory oversight and accountability within the banking sector, a core component of the Financials sector. The subject matter is specifically regarding an authorized deposit-taking institution (ADI), which falls under the Financials sector.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-medium tooltip-container">
+                                    Medium
+                                    <span class="tooltip">While the article discusses a specific instance of director disqualification, it highlights APRA&#39;s commitment to enforcing the FAR. This suggests that similar events are possible, but not extremely frequent, representing a &#39;Possible&#39; Likelihood. The impact is &#39;Moderate&#39; as although Xinja is in liquidation, the disqualifications demonstrate the consequences of non-compliance which can have a notable effect on operations and reputation within the financial industry.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-9125890791017129397" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Releases
 APRA disqualifies two directors of Xinja Bank under Financial Accountability Regime
 Thursday 9 October 2025
@@ -1159,7 +1611,12 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="luke woodward appointed accc commissioner" data-date="Wed, 08 Oct 2025 23:32:47 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="luke woodward appointed accc commissioner" data-date="Wed, 08 Oct 2025 23:32:47 +0000" data-industry="other" data-risk="low">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-2059152661026178027')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-2059152661026178027-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/luke-woodward-appointed-accc-commissioner" target="_blank" class="article-title">Luke Woodward appointed ACCC Commissioner</a>
@@ -1168,6 +1625,26 @@ The Australian Prudential Regulation Authority (APRA) is the prudential regulato
                                 <span class="article-date">08 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">*   **Luke Woodward appointed ACCC Commissioner:** Effective October 10, 2025, for a 5-year term.
+*   **Extensive Competition & Consumer Law Experience:** Woodward brings over 30 years of experience, including prior roles at the ACCC and as a partner at King and Wood Mallesons.
+*   **Focus on Enforcement & Mergers:** ACCC Chair highlights Woodward's strong litigation background as an asset, particularly regarding enforcement programs and the new merger regime.
+*   **Replaces Liza Carver:** Woodward fills the vacancy left by the departure of former Commissioner Liza Carver.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">This article discusses the appointment of a commissioner to the ACCC, which is a regulatory body. Regulatory bodies do not neatly fit into any of the defined GICS sectors as their role is to oversee and regulate various industries across the economy.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Low
+                                    <span class="tooltip">The appointment of a new ACCC commissioner, while important for the agency, is unlikely to create significant disruption or loss for other organisations. While the commissioner&#39;s background could potentially influence future decisions, the direct and immediate impact is likely minor and contained.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-2059152661026178027" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 9 October 2025
 ACCC Chair Gina Cass-Gottlieb has welcomed the appointment of Luke Woodward as a Commissioner for a 5-year term at the ACCC, commencing from 10 October 2025.
@@ -1193,7 +1670,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="elders' acquisition of delta agribusiness not opposed, subject to divestments" data-date="Wed, 08 Oct 2025 22:11:43 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="elders' acquisition of delta agribusiness not opposed, subject to divestments" data-date="Wed, 08 Oct 2025 22:11:43 +0000" data-industry="consumer staples" data-risk="low">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-271425737898923646')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-271425737898923646-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/elders-acquisition-of-delta-agribusiness-not-opposed-subject-to-divestments" target="_blank" class="article-title">Elders' acquisition of Delta Agribusiness not opposed, subject to divestments</a>
@@ -1202,6 +1684,27 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">08 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">*   **Elders' acquisition of Delta Agribusiness is approved by the ACCC, subject to divestiture of six Delta stores in Western Australia.** This is crucial for understanding the deal's regulatory clearance and its limitations.
+*   **The ACCC was concerned about reduced competition in specific local areas of Western Australia due to the acquisition.** This highlights the importance of local market dynamics in merger reviews, particularly in the agricultural sector.
+*   **Elders provided a court-enforceable undertaking to divest the six Delta stores to Independent Rural and E. E. Muir & Sons to address the ACCC's competition concerns.** This detail is vital for compliance officers tracking the implementation of the acquisition.
+*   **The ACCC did not find substantial lessening of competition at a broader regional, state, or national level, or in the wholesale supply of rural merchandise.** This is important for assessing the overall competitive landscape post-acquisition.
+*   **Compliance officers and business executives should consult the ACCC's public register for full details of the undertaking and the Statement of Issues.** This emphasizes the need for due diligence and access to primary regulatory documents.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Consumer Staples
+                                    <span class="tooltip">The article describes Elders and Delta Agribusiness supplying &quot;rural merchandise such as agricultural chemicals, seed, fertiliser, animal health products and related services.&quot; These products are essential for agricultural production and are thus considered staples. Furthermore, the acquisition of Delta Agribusiness by Elders will impact the retail supply of these essential agricultural products.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Low
+                                    <span class="tooltip">The ACCC approved the acquisition subject to divestments, indicating any negative impact is unlikely. While the ACCC initially had concerns, the undertaking provided by Elders mitigates any significant risk to competition.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-271425737898923646" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 9 October 2025
 Topics
@@ -1243,7 +1746,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="telstra fined $18 million for misleading belong customers over broadband speed claims" data-date="Thu, 02 Oct 2025 23:22:11 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="telstra fined $18 million for misleading belong customers over broadband speed claims" data-date="Thu, 02 Oct 2025 23:22:11 +0000" data-industry="communication services" data-risk="high">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-1594723500657290322')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-1594723500657290322-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/telstra-fined-18-million-for-misleading-belong-customers-over-broadband-speed-claims" target="_blank" class="article-title">Telstra fined $18 million for misleading Belong customers over broadband speed claims</a>
@@ -1252,6 +1760,27 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">02 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">*   **Telstra Fined $18 Million:** For misleading nearly 9,000 Belong customers by downgrading their NBN upload speed without notification, violating Australian Consumer Law.
+*   **Failure to Inform:** Telstra did not inform Belong customers their upload speed was reduced from 40 Mbps to 20 Mbps.
+*   **Customer Remediation:** Telstra is providing affected customers a credit/payment of $15 per month of downgraded service, totaling over $2.3 million.
+*   **ACCC Enforcement Priority:** Misleading pricing and claims in telecommunications is a key focus area for the ACCC's enforcement efforts.
+*   **Important Scam Warning:** The ACCC warns of potential scams using this news to falsely offer compensation assistance, advising caution and verification before sharing information or money.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Communication Services
+                                    <span class="tooltip">The article directly involves Telstra, a major telecommunications company, and their Belong broadband service. The issue revolves around misleading customers regarding broadband speeds, which falls under the core services provided by companies in the Communication Services sector.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-high tooltip-container">
+                                    High
+                                    <span class="tooltip">While the event itself (misleading customers) happened in the past, the risk of future occurrences exists given Telstra&#39;s size and operational complexity. The financial penalty of $18 million and remediation costs exceeding $2.3 million represent a major financial impact, justifying a high-risk rating.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-1594723500657290322" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 3 October 2025
 Topics
@@ -1300,7 +1829,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="east coast gas supply outlook eases for first quarter 2026" data-date="Wed, 01 Oct 2025 02:00:08 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="east coast gas supply outlook eases for first quarter 2026" data-date="Wed, 01 Oct 2025 02:00:08 +0000" data-industry="energy" data-risk="medium">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-2682812094770582369')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-2682812094770582369-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/east-coast-gas-supply-outlook-eases-for-first-quarter-2026" target="_blank" class="article-title">East coast gas supply outlook eases for first quarter 2026</a>
@@ -1309,6 +1843,27 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">01 Oct 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">*   **East Coast Gas Supply Outlook Improving, But Uncertain:** ACCC forecasts a potential surplus of 2-24 PJ for Q1 2026, but this hinges on LNG producers' decisions regarding uncontracted gas exports.
+*   **Southern States Face Tight Supply:** Southern gas producers are not expecting a surplus in Q1 2026, raising concerns about replenishing gas storage for the winter.
+*   **Limited Impact of Gas Policy Measures:** The Gas Market Code, Heads of Agreement, and Australian Domestic Gas Security Mechanism have not significantly improved outcomes for domestic gas users, and may have unintended negative consequences.
+*   **Decline in Domestic Supply from LNG Producers:** Since the 2022 Heads of Agreement, LNG producers have decreased domestic gas supply and increased LNG exports.
+*   **Contracting Remains Below Pre-2022 Levels:** While gas suppliers and users have signed more long-term supply deals for 2026 and 2027, the total contracted volume is still lower than pre-2022 levels.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Energy
+                                    <span class="tooltip">The article discusses gas supply, production, pricing, and policy measures related to the Australian east coast gas market. These activities are directly related to the exploration, production, and distribution of energy resources, which falls under the Energy sector.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-medium tooltip-container">
+                                    Medium
+                                    <span class="tooltip">The article indicates a &quot;tight&quot; supply-demand outlook and concerns about replenishing storage, suggesting a possible disruption (likelihood 3). The ACCC notes the gas policy measures have not materially improved outcomes and might even be having unintended consequences, leading to a noticeable effect on operations (impact 3).</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-2682812094770582369" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 1 October 2025
 Topics
@@ -1358,7 +1913,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="federal court orders optus to pay $100m penalty for unconscionable conduct" data-date="Wed, 24 Sep 2025 05:04:05 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="federal court orders optus to pay $100m penalty for unconscionable conduct" data-date="Wed, 24 Sep 2025 05:04:05 +0000" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-6247693920902918870')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-6247693920902918870-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/federal-court-orders-optus-to-pay-100m-penalty-for-unconscionable-conduct" target="_blank" class="article-title">Federal Court orders Optus to pay $100m penalty for unconscionable conduct</a>
@@ -1367,6 +1927,23 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">24 Sep 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-6247693920902918870" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 24 September 2025
 Topics
@@ -1458,7 +2035,12 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="ACCC News" data-title="justanswer in court for alleged misleading prices, subscription trap and government affiliation claims" data-date="Mon, 22 Sep 2025 22:30:05 +0000">
+                        <tr class="article-row" data-source="ACCC News" data-title="justanswer in court for alleged misleading prices, subscription trap and government affiliation claims" data-date="Mon, 22 Sep 2025 22:30:05 +0000" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-2831533557934255753')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-2831533557934255753-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag accc">ACCC News</span>
                                 <a href="https://www.accc.gov.au/media-release/justanswer-in-court-for-alleged-misleading-prices-subscription-trap-and-government-affiliation-claims" target="_blank" class="article-title">JustAnswer in Court for alleged misleading prices, subscription trap and government affiliation claims</a>
@@ -1467,6 +2049,23 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">22 Sep 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-2831533557934255753" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Date
 23 September 2025
 Topics
@@ -1511,7 +2110,362 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="staff appointment" data-date="Staff Appointment">
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="austrac releases guidance for current and new reporting entities" data-date="Thu, 16 Oct 2025 20:35:35 GMT" data-industry="financials" data-risk="medium">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-1930020505945113526')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-1930020505945113526-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/austrac-releases-guidance-current-and-new-reporting-entities" target="_blank" class="article-title">AUSTRAC releases guidance for current and new reporting entities</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Thu, 16 Oct 2025 20:35:35 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Financials
+                                    <span class="tooltip">The article discusses guidance from AUSTRAC, which is the Australian Transaction Reports and Analysis Centre. AUSTRAC is the government agency responsible for preventing and detecting money laundering and terrorism financing, primarily focused on entities within the financial sector that must comply with reporting obligations. Therefore, the article is directly related to the regulation and compliance of financial institutions.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-medium tooltip-container">
+                                    Medium
+                                    <span class="tooltip">While the inability to access the article prevents a full assessment, AUSTRAC guidance is relevant to reporting entities, so it is possible that changes or clarifications could occasionally impact operations. A moderate impact could arise if new or adjusted requirements require modifications to existing compliance programs.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-1930020505945113526" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="powers proposed to tackle high-risk products services and channels" data-date="Thu, 16 Oct 2025 04:15:43 GMT" data-industry="financials" data-risk="medium">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-4843802930613873524')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-4843802930613873524-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/powers-proposed-tackle-high-risk-products-services-and-channels" target="_blank" class="article-title">Powers proposed to tackle high-risk products services and channels</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Thu, 16 Oct 2025 04:15:43 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Due to my inability to access the article content, I cannot provide a summarized list of bullet points.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Financials
+                                    <span class="tooltip">The title mentions &quot;Powers proposed to tackle high-risk products services and channels&quot; and the source is AUSTRAC (Australian Transaction Reports and Analysis Centre). AUSTRAC is a government agency focused on financial intelligence and regulation. Given the focus on high-risk financial activities and a regulator source, the Financials sector is the most likely fit.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-medium tooltip-container">
+                                    Medium
+                                    <span class="tooltip">If AUSTRAC is proposing new powers, it is possible (likelihood 3) that our organization uses one of the products, services, or channels being targeted. The impact would likely be moderate (impact 3) if we need to adjust our compliance programs or face increased scrutiny, but not necessarily catastrophic.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-4843802930613873524" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="austrac urges financial services look out for child exploitation transactions" data-date="Sun, 14 Sep 2025 23:23:59 GMT" data-industry="other" data-risk="high">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-2640815468846546689')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-2640815468846546689-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/austrac-urges-financial-services-look-out-child-exploitation-transactions" target="_blank" class="article-title">AUSTRAC urges financial services look out for child exploitation transactions</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Sun, 14 Sep 2025 23:23:59 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Due to the error retrieving the article's content, I cannot provide the specific bullet points related to AUSTRAC's urging financial services to look out for child exploitation transactions.  I am unable to summarize an article I cannot access.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-high tooltip-container">
+                                    High
+                                    <span class="tooltip">While the frequency of a specific financial institution being directly involved in child exploitation transactions is arguably &quot;Possible&quot; (3), the potential &quot;Impact&quot; of such involvement, if discovered, would be &quot;Major&quot; (4). This is because it could lead to significant reputational damage, substantial fines from AUSTRAC, and severe operational disruption due to investigations and potential loss of licenses.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-2640815468846546689" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="austrac issues $187,800 infringement notice for late reporting" data-date="Mon, 01 Sep 2025 23:13:51 GMT" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-2606874857506528613')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-2606874857506528613-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/austrac-issues-187800-infringement-notice-late-reporting" target="_blank" class="article-title">AUSTRAC issues $187,800 infringement notice for late reporting</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Mon, 01 Sep 2025 23:13:51 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-2606874857506528613" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="austrac orders audit of global crypto exchange" data-date="Fri, 22 Aug 2025 02:15:28 GMT" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-3434567189961747049')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-3434567189961747049-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/austrac-orders-audit-global-crypto-exchange" target="_blank" class="article-title">AUSTRAC orders audit of global crypto exchange</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Fri, 22 Aug 2025 02:15:28 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-3434567189961747049" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="independent remitters told to ‘use it or lose it’ in austrac registration blitz" data-date="Tue, 05 Aug 2025 23:18:39 GMT" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-4285997813487653240')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-4285997813487653240-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/independent-remitters-told-use-it-or-lose-it-austrac-registration-blitz" target="_blank" class="article-title">Independent remitters told to ‘use it or lose it’ in AUSTRAC registration blitz</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Tue, 05 Aug 2025 23:18:39 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-4285997813487653240" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="austrac launches civil penalty proceedings against pokies giant mounties" data-date="Mon, 28 Jul 2025 01:18:55 GMT" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-3780005605741592714')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-3780005605741592714-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/austrac-launches-civil-penalty-proceedings-against-pokies-giant-mounties" target="_blank" class="article-title">AUSTRAC launches civil penalty proceedings against pokies giant Mounties</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Mon, 28 Jul 2025 01:18:55 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-3780005605741592714" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="austrac finalises enforceable undertaking with nab" data-date="Fri, 25 Jul 2025 01:30:58 GMT" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-5508324679522265120')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-5508324679522265120-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/austrac-finalises-enforceable-undertaking-nab" target="_blank" class="article-title">AUSTRAC finalises Enforceable Undertaking with NAB</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Fri, 25 Jul 2025 01:30:58 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-5508324679522265120" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="paypal’s enforceable undertaking finalised" data-date="Tue, 22 Jul 2025 05:02:47 GMT" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-4693973415652161839')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-4693973415652161839-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/paypals-enforceable-undertaking-finalised" target="_blank" class="article-title">PayPal’s Enforceable Undertaking finalised</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Tue, 22 Jul 2025 05:02:47 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-4693973415652161839" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="AUSTRAC Media Releases" data-title="austrac deems perth mint free from enforceable undertaking" data-date="Tue, 22 Jul 2025 00:58:10 GMT" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-5287266975265369139')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-5287266975265369139-icon">▶</span>
+                                </button>
+                            </td>
+                            <td>
+                                <span class="source-tag austrac">AUSTRAC Media Releases</span>
+                                <a href="https://www.austrac.gov.au/news-and-media/media-release/austrac-deems-perth-mint-free-enforceable-undertaking" target="_blank" class="article-title">AUSTRAC deems Perth Mint free from enforceable undertaking</a>
+                            </td>
+                            <td>
+                                <span class="article-date">Tue, 22 Jul 2025 00:58:10 GMT</span>
+                            </td>
+                            <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-5287266975265369139" style="display: none;">
+                            <td colspan="6">
+                                <div class="article-content">Error fetching content: HTTPSConnectionPool(host='www.austrac.gov.au', port=443): Read timed out. (read timeout=30)</div>
+                            </td>
+                        </tr>
+
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="staff appointment" data-date="Staff Appointment" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-6652569695014389766')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-6652569695014389766-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-30.html" target="_blank" class="article-title">Staff Appointment</a>
@@ -1520,6 +2474,23 @@ media@accc.gov.au or 1300 138 917. The media team is only able to answer request
                                 <span class="article-date">Staff Appointment</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-6652569695014389766" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Release
 Staff Appointment
 Number
@@ -1547,7 +2518,12 @@ rbainfo@rba.gov.au</div>
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="release of financial stability review – october 2025" data-date="Release of Financial Stability Review – October 2025">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="release of financial stability review – october 2025" data-date="Release of Financial Stability Review – October 2025" data-industry="financials" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-6482848953144926118')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-6482848953144926118-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-29.html" target="_blank" class="article-title">Release of Financial Stability Review – October 2025</a>
@@ -1556,6 +2532,23 @@ rbainfo@rba.gov.au</div>
                                 <span class="article-date">Release of Financial Stability Review – October 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Financials
+                                    <span class="tooltip">The article discusses the Financial Stability Review released by the Reserve Bank of Australia (RBA). It directly assesses the health, resilience, and risks within the Australian financial system, including banks, household debt, and lending standards. These are all key components and concerns within the Financials sector.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-6482848953144926118" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Release
 Release of Financial Stability Review – October 2025
 Number
@@ -1592,7 +2585,12 @@ rbainfo@rba.gov.au</div>
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="2025 triennial survey of foreign exchange and derivative markets" data-date="2025 Triennial Survey of Foreign Exchange and Derivative Markets">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="2025 triennial survey of foreign exchange and derivative markets" data-date="2025 Triennial Survey of Foreign Exchange and Derivative Markets" data-industry="financials" data-risk="low">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-4466315927603375182')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-4466315927603375182-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-28.html" target="_blank" class="article-title">2025 Triennial Survey of Foreign Exchange and Derivative Markets</a>
@@ -1601,6 +2599,27 @@ rbainfo@rba.gov.au</div>
                                 <span class="article-date">2025 Triennial Survey of Foreign Exchange and Derivative Markets</span>
                             </td>
                             <td>
+                                <div class="summary-text">*   **FX Market Growth:** Australia's FX market experienced a significant surge, reaching a record high of US$201 billion in daily turnover in April 2025, a 34% increase from 2022, driven by heightened FX volatility and trade policy announcements.
+*   **OTC Derivatives Surge:** Australian OTC interest rate derivatives markets saw a substantial 123% increase in average daily turnover to US$252 billion, primarily due to a rise in interest rate swaps.
+*   **AUD Ranking:** The Australian dollar remains a significant global currency, ranking seventh most traded (down from sixth), with its share of turnover stable around 6%. The AUD/USD currency pair continues to be the sixth most traded globally.
+*   **Market Structure:** FX swaps continue to dominate Australian FX market turnover at 53%, with spot transactions increasing to 25% and outright forwards relatively stable at 18%.
+*   **Further Data Release:** The Bank of International Settlements (BIS) will release final global data and analysis in December 2025, with related data on amounts outstanding in OTC derivatives to be published in November 2025. Detailed Australian results are available on the RBA website.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Financials
+                                    <span class="tooltip">This article directly discusses foreign exchange (FX) and over-the-counter (OTC) derivatives markets. These markets and instruments are core components of the financial industry, dealing with currency exchange, interest rate derivatives, and other financial products. The Reserve Bank of Australia&#39;s survey specifically measures turnover and activity in these financial markets.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Low
+                                    <span class="tooltip">This article primarily reports on increased activity in the FX and OTC derivatives markets. While increased activity and volatility can present risks, this article describes it as a result of identifiable factors like trade policy announcements, suggesting a manageable situation and the overall impact is small and contained.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-4466315927603375182" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Release
 2025 Triennial Survey of Foreign Exchange and Derivative Markets
 Number
@@ -1660,7 +2679,12 @@ Triennial Central Bank Survey of foreign exchange and Over-the-counter (OTC) der
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="statement by the monetary policy board: monetary policy decision" data-date="Statement by the Monetary Policy Board: Monetary Policy Decision">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="statement by the monetary policy board: monetary policy decision" data-date="Statement by the Monetary Policy Board: Monetary Policy Decision" data-industry="financials" data-risk="medium">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-5127189638671614131')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-5127189638671614131-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-27.html" target="_blank" class="article-title">Statement by the Monetary Policy Board: Monetary Policy Decision</a>
@@ -1669,6 +2693,27 @@ Triennial Central Bank Survey of foreign exchange and Over-the-counter (OTC) der
                                 <span class="article-date">Statement by the Monetary Policy Board: Monetary Policy Decision</span>
                             </td>
                             <td>
+                                <div class="summary-text">*   **Cash Rate Unchanged:** The central bank held the cash rate steady at 3.60%, signaling a pause in monetary policy easing.
+*   **Inflation Concerns Persist:** While inflation has fallen, recent data suggests a potential rebound in the September quarter, causing uncertainty.
+*   **Economic Recovery with Uncertainty:** Domestic economic activity is recovering, driven by private demand, but the outlook is clouded by domestic and international uncertainties.
+*   **Labour Market Steady but Unit Labour Costs High:** Labour market conditions remain stable with low unemployment, but weak productivity and high unit labour costs are a concern.
+*   **Cautious Approach:** The central bank will remain cautious and monitor evolving data, ready to respond decisively to international developments while prioritizing price stability and full employment.</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Financials
+                                    <span class="tooltip">The article discusses monetary policy decisions, interest rates, credit availability, and inflation, which are all directly related to the financial system and the activities of financial institutions. It specifically mentions the cash rate and its impact on the economy, key concerns of the Financials sector.</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-medium tooltip-container">
+                                    Medium
+                                    <span class="tooltip">The article highlights uncertainty in the economic outlook, particularly regarding inflation and domestic activity. While a major crisis is unlikely, the potential for higher than expected inflation or a slowdown in economic activity could moderately impact business operations.</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-5127189638671614131" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Release
 Statement by the Monetary Policy Board: Monetary Policy Decision
 Number
@@ -1748,7 +2793,12 @@ rbainfo@rba.gov.au</div>
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="variation to the access regime for the atm system" data-date="Variation to the Access Regime for the ATM System">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="variation to the access regime for the atm system" data-date="Variation to the Access Regime for the ATM System" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-4220336480901975697')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-4220336480901975697-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-26.html" target="_blank" class="article-title">Variation to the Access Regime for the ATM System</a>
@@ -1757,6 +2807,23 @@ rbainfo@rba.gov.au</div>
                                 <span class="article-date">Variation to the Access Regime for the ATM System</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-4220336480901975697" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Release
 Variation to the Access Regime for the ATM System
 Number
@@ -1788,7 +2855,12 @@ rbainfo@rba.gov.au</div>
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="assessment of asx clearing and settlement facilities – september 2025" data-date="Assessment of ASX Clearing and Settlement Facilities – September 2025">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="assessment of asx clearing and settlement facilities – september 2025" data-date="Assessment of ASX Clearing and Settlement Facilities – September 2025" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-7734286711979743790')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-7734286711979743790-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-25.html" target="_blank" class="article-title">Assessment of ASX Clearing and Settlement Facilities – September 2025</a>
@@ -1797,6 +2869,23 @@ rbainfo@rba.gov.au</div>
                                 <span class="article-date">Assessment of ASX Clearing and Settlement Facilities – September 2025</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-7734286711979743790" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Release
 Assessment of ASX Clearing and Settlement Facilities – September 2025
 Number
@@ -1866,7 +2955,12 @@ rbainfo@rba.gov.au</div>
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="staff appointment" data-date="Staff Appointment">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="staff appointment" data-date="Staff Appointment" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-938686983739269940')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-938686983739269940-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-24.html" target="_blank" class="article-title">Staff Appointment</a>
@@ -1875,6 +2969,23 @@ rbainfo@rba.gov.au</div>
                                 <span class="article-date">Staff Appointment</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-938686983739269940" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Release
 Staff Appointment
 Number
@@ -1903,7 +3014,12 @@ rbainfo@rba.gov.au</div>
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="payments system board update: august 2025 meeting" data-date="Payments System Board Update: August 2025 Meeting">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="payments system board update: august 2025 meeting" data-date="Payments System Board Update: August 2025 Meeting" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-9078267444304132223')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-9078267444304132223-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-23.html" target="_blank" class="article-title">Payments System Board Update: August 2025 Meeting</a>
@@ -1912,6 +3028,23 @@ rbainfo@rba.gov.au</div>
                                 <span class="article-date">Payments System Board Update: August 2025 Meeting</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-9078267444304132223" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Media Release
 Payments System Board Update: August 2025 Meeting
 Number
@@ -1993,7 +3126,12 @@ rbainfo@rba.gov.au</div>
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="statement by the monetary policy board: monetary policy decision" data-date="Statement by the Monetary Policy Board: Monetary Policy Decision">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="statement by the monetary policy board: monetary policy decision" data-date="Statement by the Monetary Policy Board: Monetary Policy Decision" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-5361473890687139580')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-5361473890687139580-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-22.html" target="_blank" class="article-title">Statement by the Monetary Policy Board: Monetary Policy Decision</a>
@@ -2002,6 +3140,23 @@ rbainfo@rba.gov.au</div>
                                 <span class="article-date">Statement by the Monetary Policy Board: Monetary Policy Decision</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-5361473890687139580" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">More on the August 2025 monetary policy decision
 Media Release
 Statement by the Monetary Policy Board: Monetary Policy Decision
@@ -2087,7 +3242,12 @@ rbainfo@rba.gov.au</div>
                             </td>
                         </tr>
 
-                        <tr class="article-row" data-source="RBA Media Releases" data-title="rba and apra update their memorandum of understanding to strengthen cooperation to support financial stability" data-date="RBA and APRA Update Their Memorandum of Understanding to Strengthen Cooperation to Support Financial Stability">
+                        <tr class="article-row" data-source="RBA Media Releases" data-title="rba and apra update their memorandum of understanding to strengthen cooperation to support financial stability" data-date="RBA and APRA Update Their Memorandum of Understanding to Strengthen Cooperation to Support Financial Stability" data-industry="other" data-risk="assessment failed">
+                            <td class="toggle-cell">
+                                <button class="toggle-btn" onclick="toggleFullText('article-846540710653539675')" aria-label="Toggle full text">
+                                    <span class="toggle-icon" id="article-846540710653539675-icon">▶</span>
+                                </button>
+                            </td>
                             <td>
                                 <span class="source-tag rba">RBA Media Releases</span>
                                 <a href="https://www.rba.gov.au/media-releases/2025/mr-25-21.html" target="_blank" class="article-title">RBA and APRA Update Their Memorandum of Understanding to Strengthen Cooperation to Support Financial Stability</a>
@@ -2096,6 +3256,23 @@ rbainfo@rba.gov.au</div>
                                 <span class="article-date">RBA and APRA Update Their Memorandum of Understanding to Strengthen Cooperation to Support Financial Stability</span>
                             </td>
                             <td>
+                                <div class="summary-text">Summary generation failed</div>
+                            </td>
+                            <td>
+                                <span class="industry-badge tooltip-container">
+                                    Other
+                                    <span class="tooltip">Industry classification could not be completed</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="risk-badge risk-low tooltip-container">
+                                    Assessment Failed
+                                    <span class="tooltip">Risk assessment could not be completed</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="full-text-row" id="article-846540710653539675" style="display: none;">
+                            <td colspan="6">
                                 <div class="article-content">Joint Media Release
 RBA and APRA Update
 Their Memorandum of Understanding to Strengthen Cooperation to Support Financial Stability
@@ -2136,17 +3313,33 @@ rbainfo@rba.gov.au</div>
         </div>
 
         <div class="footer">
-            <p>Displaying latest articles from ACCC, ASIC, APRA, AUSTRAC, and RBA</p>
+            <p>Displaying all collected articles from ACCC, ASIC, APRA, AUSTRAC, and RBA</p>
             <div class="footer-divider"></div>
-            <p>Automatically updated every 12 hours</p>
+            <p>Automatically updated every 12 hours • Articles accumulated since 22/10/2025</p>
         </div>
     </div>
 
     <script>
         let currentSort = { column: null, ascending: true };
 
+        function toggleFullText(articleId) {
+            const fullTextRow = document.getElementById(articleId);
+            const icon = document.getElementById(articleId + '-icon');
+            
+            if (fullTextRow.style.display === 'none') {
+                fullTextRow.style.display = 'table-row';
+                icon.textContent = '▼';
+                icon.classList.add('rotated');
+            } else {
+                fullTextRow.style.display = 'none';
+                icon.textContent = '▶';
+                icon.classList.remove('rotated');
+            }
+        }
+
         function filterArticles(source) {
             const rows = document.querySelectorAll('.article-row');
+            const fullTextRows = document.querySelectorAll('.full-text-row');
             const buttons = document.querySelectorAll('.filter-btn');
             
             buttons.forEach(btn => {
@@ -2157,12 +3350,19 @@ rbainfo@rba.gov.au</div>
                 }
             });
             
-            rows.forEach(row => {
+            rows.forEach((row, index) => {
                 const rowSource = row.dataset.source;
+                const correspondingFullTextRow = fullTextRows[index];
+                
                 if (source === 'all' || rowSource === source) {
                     row.classList.remove('hidden');
+                    // Keep full-text row's display state (might be open or closed)
                 } else {
                     row.classList.add('hidden');
+                    // Hide corresponding full-text row
+                    if (correspondingFullTextRow) {
+                        correspondingFullTextRow.classList.add('hidden');
+                    }
                 }
             });
         }
@@ -2187,9 +3387,11 @@ rbainfo@rba.gov.au</div>
             });
             
             const activeHeader = document.querySelector(`th[onclick="sortTable('${column}')"]`);
-            activeHeader.classList.add('sorted');
-            const activeIcon = activeHeader.querySelector('.sort-icon');
-            activeIcon.textContent = currentSort.ascending ? '▲' : '▼';
+            if (activeHeader) {
+                activeHeader.classList.add('sorted');
+                const activeIcon = activeHeader.querySelector('.sort-icon');
+                activeIcon.textContent = currentSort.ascending ? '▲' : '▼';
+            }
             
             // Sort rows
             rows.sort((a, b) => {
@@ -2201,6 +3403,14 @@ rbainfo@rba.gov.au</div>
                 } else if (column === 'date') {
                     aValue = new Date(a.dataset.date || '1970-01-01');
                     bValue = new Date(b.dataset.date || '1970-01-01');
+                } else if (column === 'industry') {
+                    aValue = a.dataset.industry || 'other';
+                    bValue = b.dataset.industry || 'other';
+                } else if (column === 'risk') {
+                    // Risk rating sorting: Extreme > High > Medium > Low > Not Rated
+                    const riskOrder = { 'extreme': 5, 'high': 4, 'medium': 3, 'low': 2, 'not rated': 1, 'assessment failed': 0 };
+                    aValue = riskOrder[a.dataset.risk] || 0;
+                    bValue = riskOrder[b.dataset.risk] || 0;
                 }
                 
                 if (aValue < bValue) return currentSort.ascending ? -1 : 1;
@@ -2208,8 +3418,15 @@ rbainfo@rba.gov.au</div>
                 return 0;
             });
             
-            // Re-append rows in sorted order
-            rows.forEach(row => tbody.appendChild(row));
+            // Re-append rows with their corresponding full-text rows
+            rows.forEach(row => {
+                tbody.appendChild(row);
+                const articleId = row.querySelector('.toggle-btn').getAttribute('onclick').match(/'(.+)'/)[1];
+                const fullTextRow = document.getElementById(articleId);
+                if (fullTextRow) {
+                    tbody.appendChild(fullTextRow);
+                }
+            });
         }
     </script>
 </body>
