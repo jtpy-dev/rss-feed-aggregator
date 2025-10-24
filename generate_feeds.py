@@ -7,7 +7,6 @@ from xml.dom import minidom
 import time
 import json
 import os
-import google.generativeai as genai
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -15,14 +14,22 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# Configure Gemini AI
+# Configure Google Gemini
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel('gemini-2.0-flash-exp')
+GEMINI_MODEL = 'gemini-2.5-flash-lite'  # Fastest and most cost-efficient 2.5 model
+GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+
+# Rate limiting: 15 requests per minute, 1000 per day
+# To stay safely under 15/min, we'll use 4.5 second delays between requests (13.3 requests/min)
+RATE_LIMIT_DELAY = 4.5  # seconds between API calls
+
+gemini_available = bool(GEMINI_API_KEY)
+if gemini_available:
+    print(f"Using Google Gemini ({GEMINI_MODEL}) for LLM features")
+    print(f"Rate limit: {int(60/RATE_LIMIT_DELAY)} requests per minute (max 15 allowed)")
 else:
-    model = None
-    print("Warning: GEMINI_API_KEY not found. LLM features will be disabled.")
+    print("WARNING: GEMINI_API_KEY not found in environment variables")
+    print("Set GEMINI_API_KEY to enable AI analysis features")
 
 # Configuration
 FEED_SOURCES = [
@@ -59,9 +66,53 @@ OUTPUT_XML = 'feed-data.xml'
 DATABASE_FILE = 'articles-database.json'
 DATA_COLLECTION_START_DATE = '22/10/2025'  # Date when we started collecting data
 
+def call_gemini_api(prompt, max_retries=3):
+    """Call Google Gemini API with retry logic and rate limiting"""
+    if not gemini_available:
+        return None
+    
+    for attempt in range(max_retries):
+        try:
+            payload = {
+                "contents": [{
+                    "parts": [{"text": prompt}]
+                }],
+                "generationConfig": {
+                    "temperature": 0.7,
+                    "maxOutputTokens": 2048,
+                }
+            }
+            
+            response = requests.post(
+                f"{GEMINI_API_URL}?key={GEMINI_API_KEY}",
+                json=payload,
+                timeout=30
+            )
+            response.raise_for_status()
+            
+            result = response.json()
+            
+            # Extract text from Gemini response format
+            if 'candidates' in result and len(result['candidates']) > 0:
+                candidate = result['candidates'][0]
+                if 'content' in candidate and 'parts' in candidate['content']:
+                    text = candidate['content']['parts'][0].get('text', '')
+                    return text.strip()
+            
+            print(f"  Unexpected Gemini API response format")
+            return None
+            
+        except Exception as e:
+            print(f"  Gemini API error (attempt {attempt + 1}/{max_retries}): {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2)
+            else:
+                return None
+    return None
+
 def generate_summary(article_text, title):
-    """Generate a summary of the article using Gemini"""
-    if not model or not article_text:
+    """Generate a summary of the article using Google Gemini"""
+    if not gemini_available or not article_text:
         return "Summary not available"
     
     try:
@@ -74,19 +125,26 @@ Article Text:
 
 Provide only the bullet points, no introduction or conclusion."""
 
-        response = model.generate_content(prompt)
-        return response.text.strip()
+        response_text = call_gemini_api(prompt)
+        
+        # Rate limiting: wait between API calls to stay under 15 requests/minute
+        time.sleep(RATE_LIMIT_DELAY)
+        
+        if response_text:
+            return response_text
+        else:
+            return "Summary generation failed"
     except Exception as e:
         print(f"Error generating summary: {e}")
         return "Summary generation failed"
 
 def generate_risk_rating(article_text, title, source):
-    """Generate risk rating and rationale using Gemini"""
-    if not model or not article_text:
+    """Generate risk rating and rationale using Google Gemini"""
+    if not gemini_available or not article_text:
         return {"rating": "Not Rated", "rationale": "Risk assessment not available"}
     
     try:
-        prompt = f"""You are a senior corporate risk analyst. Your task is to evaluate this media article and assess the level of risk it represents using a 5×5 risk assessment matrix.
+        prompt = f"""You are a senior corporate risk analyst. Your task is to evaluate this media article and assess the level of risk it represents using a 5Ã—5 risk assessment matrix.
 
 Article Title: {title}
 Source: {source}
@@ -96,18 +154,18 @@ Article Text:
 
 FRAMEWORK:
 Likelihood (1-5):
-1 – Rare: May occur only in exceptional circumstances
-2 – Unlikely: Could occur at some time, but not expected
-3 – Possible: Might occur occasionally under normal conditions
-4 – Likely: Will probably occur
-5 – Almost Certain: Expected to occur frequently
+1 â€“ Rare: May occur only in exceptional circumstances
+2 â€“ Unlikely: Could occur at some time, but not expected
+3 â€“ Possible: Might occur occasionally under normal conditions
+4 â€“ Likely: Will probably occur
+5 â€“ Almost Certain: Expected to occur frequently
 
 Impact (1-5):
-1 – Insignificant: Negligible business impact
-2 – Minor: Small, contained impact
-3 – Moderate: Noticeable effect on operations
-4 – Major: Significant financial loss or operational disruption
-5 – Catastrophic: Critical business impact threatening viability
+1 â€“ Insignificant: Negligible business impact
+2 â€“ Minor: Small, contained impact
+3 â€“ Moderate: Noticeable effect on operations
+4 â€“ Major: Significant financial loss or operational disruption
+5 â€“ Catastrophic: Critical business impact threatening viability
 
 Risk Matrix:
 - Low: Likelihood 1-2 AND Impact 1-2
@@ -121,8 +179,13 @@ IMPACT: [number]
 RATING: [Low/Medium/High/Extreme]
 RATIONALE: [2-3 sentences explaining the rating based on the article]"""
 
-        response = model.generate_content(prompt)
-        response_text = response.text.strip()
+        response_text = call_gemini_api(prompt)
+        
+        # Rate limiting: wait between API calls to stay under 15 requests/minute
+        time.sleep(RATE_LIMIT_DELAY)
+        
+        if not response_text:
+            return {"rating": "Assessment Failed", "rationale": "Risk assessment could not be completed"}
         
         # Parse the response
         rating = "Not Rated"
@@ -147,8 +210,8 @@ RATIONALE: [2-3 sentences explaining the rating based on the article]"""
         return {"rating": "Assessment Failed", "rationale": "Risk assessment could not be completed"}
 
 def generate_industry(article_text, title, source):
-    """Generate industry classification and rationale using Gemini"""
-    if not model or not article_text:
+    """Generate industry classification and rationale using Google Gemini"""
+    if not gemini_available or not article_text:
         return {"industry": "Other", "rationale": "Industry classification not available"}
     
     try:
@@ -178,8 +241,13 @@ Provide your response in this exact format:
 INDUSTRY: [sector name]
 RATIONALE: [2-3 sentences explaining why this sector was chosen based on the article content]"""
 
-        response = model.generate_content(prompt)
-        response_text = response.text.strip()
+        response_text = call_gemini_api(prompt)
+        
+        # Rate limiting: wait between API calls to stay under 15 requests/minute
+        time.sleep(RATE_LIMIT_DELAY)
+        
+        if not response_text:
+            return {"industry": "Other", "rationale": "Industry classification could not be completed"}
         
         # Parse the response
         industry = "Other"
@@ -254,13 +322,13 @@ def merge_articles(existing_articles, new_articles):
 
 def analyze_articles_with_ai(articles, new_article_urls):
     """Run AI analysis only on articles that don't have it yet (typically new articles)"""
-    if not model:
-        print("\nWarning: Gemini API not configured. Skipping AI analysis.")
+    if not gemini_available:
+        print("\nWarning: Google Gemini not available. Skipping AI analysis.")
         print("Set GEMINI_API_KEY environment variable to enable AI features.")
         # Set default values for all articles without AI analysis
         for article in articles:
             if not article.get('ai_summary'):
-                article['ai_summary'] = "AI analysis not available (API key not configured)"
+                article['ai_summary'] = "AI analysis not available"
                 article['risk_rating'] = "Not Rated"
                 article['risk_rationale'] = "Risk assessment unavailable"
                 article['industry'] = "Other"
@@ -297,29 +365,26 @@ def analyze_articles_with_ai(articles, new_article_urls):
             print(f"\n  Analyzing: {article['title'][:60]}...")
             
             # Generate summary
-            print("    → Generating summary...")
+            print("    â†’ Generating summary...")
             article['ai_summary'] = generate_summary(article['full_text'], article['title'])
-            time.sleep(1)  # Rate limit
             
             # Generate risk rating
-            print("    → Assessing risk...")
+            print("    â†’ Assessing risk...")
             risk_data = generate_risk_rating(article['full_text'], article['title'], article['source'])
             article['risk_rating'] = risk_data['rating']
             article['risk_rationale'] = risk_data['rationale']
-            time.sleep(1)  # Rate limit
             
             # Generate industry classification
-            print("    → Classifying industry...")
+            print("    â†’ Classifying industry...")
             industry_data = generate_industry(article['full_text'], article['title'], article['source'])
             article['industry'] = industry_data['industry']
             article['industry_rationale'] = industry_data['rationale']
-            time.sleep(1)  # Rate limit
             
             analyzed_count += 1
-            print(f"    ✓ Complete (Risk: {article['risk_rating']}, Industry: {article['industry']})")
+            print(f"    âœ“ Complete (Risk: {article['risk_rating']}, Industry: {article['industry']})")
             
         except Exception as e:
-            print(f"    ✗ Error during AI analysis: {e}")
+            print(f"    âœ— Error during AI analysis: {e}")
             # Set fallback values
             if not article.get('ai_summary'):
                 article['ai_summary'] = "Analysis failed"
@@ -331,7 +396,7 @@ def analyze_articles_with_ai(articles, new_article_urls):
                 article['industry_rationale'] = "Error during classification"
     
     print(f"\n{'='*50}")
-    print(f"✓ AI analysis complete: {analyzed_count} articles analyzed")
+    print(f"âœ“ AI analysis complete: {analyzed_count} articles analyzed")
     print(f"{'='*50}\n")
     
     return articles
@@ -503,87 +568,6 @@ def fetch_apra_news():
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         response = requests.get(url, headers=headers, timeout=30)  # Increased timeout to 30 seconds
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.content, 'html.parser')
-        articles = []
-        
-        # Try multiple selectors for APRA's page structure
-        news_items = soup.select('.view-content .views-row')
-        
-        if not news_items:
-            # Try alternative selectors
-            news_items = soup.select('article, .node, .item, .news-item')
-        
-        if not news_items:
-            # Try finding links with dates nearby
-            news_items = soup.select('.views-row, [class*="news"], [class*="publication"]')
-        
-        print(f"  Found {len(news_items)} potential APRA items")
-        
-        # Limit to 10 articles
-        for item in news_items[:10]:
-            try:
-                # Try multiple selectors for title/link
-                title_elem = item.select_one('h3 a, h2 a, .title a, a[href*="/news"], a[href*="/publication"]')
-                
-                if not title_elem:
-                    # Try finding any link in the item
-                    title_elem = item.find('a')
-                
-                if not title_elem:
-                    continue
-                
-                link_elem = title_elem
-                
-                # Try multiple date selectors
-                date_elem = item.select_one(
-                    '.date, time, .views-field-created, .field--name-created, '
-                    '.views-field-field-date, [class*="date"]'
-                )
-                
-                # If no date element, try to extract from text
-                date_text = ''
-                if date_elem:
-                    date_text = date_elem.get_text(strip=True)
-                else:
-                    item_text = item.get_text()
-                    date_text = extract_date_from_text(item_text)
-                
-                summary_elem = item.select_one('.summary, .views-field-body, .field--name-body, p')
-                
-                article_url = link_elem.get('href', '')
-                if article_url.startswith('/'):
-                    article_url = 'https://www.apra.gov.au' + article_url
-                
-                # Only add if it looks like a real article URL
-                if article_url and ('apra.gov.au' in article_url):
-                    article = {
-                        'title': title_elem.get_text(strip=True),
-                        'link': article_url,
-                        'published': date_text or '',
-                        'summary': summary_elem.get_text(strip=True)[:300] if summary_elem else '',
-                    }
-                    articles.append(article)
-                    print(f"    Found APRA article: {article['title'][:50]}...")
-            except Exception as e:
-                print(f"  Error parsing APRA item: {e}")
-                continue
-        
-        print(f"  Successfully parsed {len(articles)} APRA articles")
-        return articles
-    except Exception as e:
-        print(f"Error fetching APRA news: {e}")
-        return []
-
-def fetch_apra_news():
-    """Scrape APRA news page to create RSS-like entries"""
-    try:
-        url = 'https://www.apra.gov.au/news-and-publications'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
-        response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
         
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -1411,7 +1395,7 @@ def generate_html(articles):
         <div class="header-section">
             <h1 class="page-title">Latest Regulatory Updates</h1>
             <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
-                📊 Data collection started: ''' + DATA_COLLECTION_START_DATE + ''' | Total articles: ''' + str(len(articles)) + '''
+                ðŸ“Š Data collection started: ''' + DATA_COLLECTION_START_DATE + ''' | Total articles: ''' + str(len(articles)) + '''
             </p>
         </div>
 
@@ -1435,20 +1419,20 @@ def generate_html(articles):
                             <th style="width: 3%;">Details</th>
                             <th style="width: 22%;" onclick="sortTable('title')">
                                 Title
-                                <span class="sort-icon">▼</span>
+                                <span class="sort-icon">â–¼</span>
                             </th>
                             <th style="width: 8%;" onclick="sortTable('date')">
                                 Date
-                                <span class="sort-icon">▼</span>
+                                <span class="sort-icon">â–¼</span>
                             </th>
                             <th style="width: 25%;">Summary</th>
                             <th style="width: 12%;" onclick="sortTable('industry')">
                                 Industry
-                                <span class="sort-icon">▼</span>
+                                <span class="sort-icon">â–¼</span>
                             </th>
                             <th style="width: 10%;" onclick="sortTable('risk')">
                                 Risk Rating
-                                <span class="sort-icon">▼</span>
+                                <span class="sort-icon">â–¼</span>
                             </th>
                         </tr>
                     </thead>
@@ -1480,7 +1464,7 @@ def generate_html(articles):
                         <tr class="article-row" data-source="{article['source']}" data-title="{article['title'].lower()}" data-date="{article['published']}" data-industry="{industry.lower()}" data-risk="{risk_rating.lower()}">
                             <td class="toggle-cell">
                                 <button class="toggle-btn" onclick="toggleFullText('{article_id}')" aria-label="Toggle full text">
-                                    <span class="toggle-icon" id="{article_id}-icon">▶</span>
+                                    <span class="toggle-icon" id="{article_id}-icon">â–¶</span>
                                 </button>
                             </td>
                             <td>
@@ -1522,7 +1506,7 @@ def generate_html(articles):
         <div class="footer">
             <p>Displaying all collected articles from ACCC, ASIC, APRA, AUSTRAC, and RBA</p>
             <div class="footer-divider"></div>
-            <p>Automatically updated every 12 hours • Articles accumulated since ''' + DATA_COLLECTION_START_DATE + '''</p>
+            <p>Automatically updated every 12 hours â€¢ Articles accumulated since ''' + DATA_COLLECTION_START_DATE + '''</p>
         </div>
     </div>
 
@@ -1535,11 +1519,11 @@ def generate_html(articles):
             
             if (fullTextRow.style.display === 'none') {
                 fullTextRow.style.display = 'table-row';
-                icon.textContent = '▼';
+                icon.textContent = 'â–¼';
                 icon.classList.add('rotated');
             } else {
                 fullTextRow.style.display = 'none';
-                icon.textContent = '▶';
+                icon.textContent = 'â–¶';
                 icon.classList.remove('rotated');
             }
         }
@@ -1590,14 +1574,14 @@ def generate_html(articles):
             document.querySelectorAll('th').forEach(th => {
                 th.classList.remove('sorted');
                 const icon = th.querySelector('.sort-icon');
-                if (icon) icon.textContent = '▼';
+                if (icon) icon.textContent = 'â–¼';
             });
             
             const activeHeader = document.querySelector(`th[onclick="sortTable('${column}')"]`);
             if (activeHeader) {
                 activeHeader.classList.add('sorted');
                 const activeIcon = activeHeader.querySelector('.sort-icon');
-                activeIcon.textContent = currentSort.ascending ? '▲' : '▼';
+                activeIcon.textContent = currentSort.ascending ? 'â–²' : 'â–¼';
             }
             
             // Sort rows
@@ -1703,17 +1687,17 @@ def main():
     html = generate_html(all_articles)
     with open(OUTPUT_HTML, 'w', encoding='utf-8') as f:
         f.write(html)
-    print(f"✓ HTML saved to {OUTPUT_HTML}")
+    print(f"âœ“ HTML saved to {OUTPUT_HTML}")
     
     # Generate XML
     print("Generating XML...")
     xml = generate_xml(all_articles)
     with open(OUTPUT_XML, 'w', encoding='utf-8') as f:
         f.write(xml)
-    print(f"✓ XML saved to {OUTPUT_XML}")
+    print(f"âœ“ XML saved to {OUTPUT_XML}")
     
     print("-" * 50)
-    print("✅ All files generated successfully!")
+    print("âœ… All files generated successfully!")
     print(f"Database contains {len(all_articles)} total articles")
 
 if __name__ == "__main__":
