@@ -7,6 +7,7 @@ from xml.dom import minidom
 import time
 import json
 import os
+import random
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -19,14 +20,14 @@ GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 GEMINI_MODEL = 'gemini-2.5-flash-lite'  # Fastest and most cost-efficient 2.5 model
 GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 
-# Rate limiting: 15 requests per minute, 1000 per day
-# To stay safely under 15/min, we'll use 4.5 second delays between requests (13.3 requests/min)
-RATE_LIMIT_DELAY = 4.5  # seconds between API calls
+# Rate limiting: FREE TIER = 10 requests per minute (not 15!)
+# To stay safely under 10/min, we'll use 6.5 second delays between requests (9.2 requests/min)
+RATE_LIMIT_DELAY = 6.5  # seconds between API calls (safe for free tier)
 
 gemini_available = bool(GEMINI_API_KEY)
 if gemini_available:
     print(f"Using Google Gemini ({GEMINI_MODEL}) for LLM features")
-    print(f"Rate limit: {int(60/RATE_LIMIT_DELAY)} requests per minute (max 15 allowed)")
+    print(f"Rate limit: {int(60/RATE_LIMIT_DELAY)} requests per minute (FREE TIER max: 10/min)")
 else:
     print("WARNING: GEMINI_API_KEY not found in environment variables")
     print("Set GEMINI_API_KEY to enable AI analysis features")
@@ -39,7 +40,7 @@ FEED_SOURCES = [
         'type': 'rss'
     },
     {
-        'url': 'https://rss.app/feeds/k8R0Dag3ta5LtEQM.xml',
+        'url': 'https://www.austrac.gov.au/media-release/rss.xml',
         'name': 'AUSTRAC Media Releases',
         'type': 'rss'
     },
@@ -426,14 +427,39 @@ def extract_date_from_text(text):
     
     return None
 
-def fetch_full_text(url):
-    """Fetch and extract full text from article URL"""
+def fetch_full_text(url, retry_count=0, max_retries=2):
+    """Fetch and extract full text from article URL with browser mimicry"""
     try:
+        # Comprehensive browser-like headers (mimics Chrome on Windows)
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'en-US,en;q=0.9,en-AU;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0',
+            'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"'
         }
-        response = requests.get(url, headers=headers, timeout=30)  # Increased timeout to 30 seconds
+        
+        # Use a session for connection pooling and cookie handling
+        session = requests.Session()
+        session.headers.update(headers)
+        
+        # Make the request with increased timeout and allow redirects
+        response = session.get(url, timeout=60, allow_redirects=True)
         response.raise_for_status()
+        
+        # Add a small delay to avoid looking like a bot (0.5-1.5 seconds)
+        import random
+        time.sleep(random.uniform(0.5, 1.5))
         
         soup = BeautifulSoup(response.content, 'html.parser')
         
@@ -459,38 +485,68 @@ def fetch_full_text(url):
             return '\n'.join(lines)
         
         return "Content not available"
+        
+    except requests.exceptions.Timeout as e:
+        # Retry on timeout with exponential backoff
+        if retry_count < max_retries:
+            wait_time = (retry_count + 1) * 2  # 2s, 4s, 6s
+            print(f"  Timeout on attempt {retry_count + 1}/{max_retries + 1}, retrying in {wait_time}s...")
+            time.sleep(wait_time)
+            return fetch_full_text(url, retry_count + 1, max_retries)
+        else:
+            print(f"  Max retries reached for {url}")
+            return f"Error: Timeout after {max_retries + 1} attempts"
+            
+    except requests.exceptions.RequestException as e:
+        print(f"  Network error fetching full text from {url}: {e}")
+        return f"Error fetching content: {str(e)}"
+        
     except Exception as e:
-        print(f"Error fetching full text from {url}: {e}")
+        print(f"  Unexpected error fetching full text from {url}: {e}")
         return f"Error fetching content: {str(e)}"
 
 def fetch_asic_news_selenium():
     """Scrape ASIC media releases page using Selenium (JavaScript required)"""
     driver = None
     try:
-        # Set up Chrome options for headless mode
+        # Set up Chrome options for headless mode (optimized for CI environments)
         chrome_options = Options()
-        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--headless=new')  # Use new headless mode
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--disable-software-rasterizer')
+        chrome_options.add_argument('--disable-extensions')
+        chrome_options.add_argument('--disable-logging')
+        chrome_options.add_argument('--log-level=3')
         chrome_options.add_argument('--window-size=1920,1080')
-        chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
+        chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
         
+        # Additional stability options for CI
+        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        chrome_options.add_experimental_option('excludeSwitches', ['enable-logging', 'enable-automation'])
+        chrome_options.add_experimental_option('useAutomationExtension', False)
+        
+        print(f"  Initializing Chrome WebDriver...")
         # Initialize the driver
         driver = webdriver.Chrome(options=chrome_options)
-        driver.set_page_load_timeout(60)
+        driver.set_page_load_timeout(90)  # Increased timeout for CI environments
         
         url = 'https://www.asic.gov.au/newsroom/media-releases/'
         print(f"  Loading {url} with Selenium...")
         driver.get(url)
         
-        # Wait for the nr-list to be present (up to 30 seconds)
+        # Wait for the nr-list to be present (increased timeout for CI)
         print("  Waiting for page to load...")
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(driver, 45)  # Increased from 30 to 45 seconds
         nr_list = wait.until(EC.presence_of_element_located((By.ID, "nr-list")))
         
-        # Give JavaScript a moment to fully render
-        time.sleep(2)
+        # Additional wait for JavaScript to fully render (critical for CI)
+        print("  Waiting for JavaScript to render...")
+        time.sleep(3)  # Increased from 2 to 3 seconds
+        
+        # Verify content is actually loaded
+        wait.until(lambda d: len(d.find_elements(By.CSS_SELECTOR, "#nr-list li")) > 0)
         
         # Get the page source and parse with BeautifulSoup
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -500,6 +556,7 @@ def fetch_asic_news_selenium():
         
         if not nr_list:
             print("  ERROR: Could not find ul#nr-list even after JavaScript rendering")
+            print(f"  Page title: {driver.title}")
             return []
         
         articles = []
@@ -552,22 +609,45 @@ def fetch_asic_news_selenium():
         return articles
         
     except Exception as e:
-        print(f"Error fetching ASIC news with Selenium: {e}")
+        print(f"\n{'='*60}")
+        print(f"ERROR fetching ASIC news with Selenium: {e}")
+        print(f"{'='*60}")
         import traceback
         traceback.print_exc()
+        
+        # Provide debugging info if driver was initialized
+        if driver:
+            try:
+                print(f"Current URL: {driver.current_url}")
+                print(f"Page title: {driver.title}")
+                print(f"Page source length: {len(driver.page_source)}")
+            except:
+                print("Could not retrieve driver debug info")
+        
+        print(f"{'='*60}\n")
         return []
     finally:
         if driver:
-            driver.quit()
+            try:
+                driver.quit()
+            except:
+                pass  # Ignore cleanup errors
 
 def fetch_apra_news():
-    """Scrape APRA news page to create RSS-like entries"""
+    """Scrape APRA news page to create RSS-like entries with browser mimicry"""
     try:
         url = 'https://www.apra.gov.au/news-and-publications'
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9,en-AU;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Cache-Control': 'max-age=0'
         }
-        response = requests.get(url, headers=headers, timeout=30)  # Increased timeout to 30 seconds
+        response = requests.get(url, headers=headers, timeout=60, allow_redirects=True)
         response.raise_for_status()
         
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -642,13 +722,20 @@ def fetch_apra_news():
         return []
 
 def fetch_rba_news():
-    """Scrape RBA media releases page to create RSS-like entries"""
+    """Scrape RBA media releases page to create RSS-like entries with browser mimicry"""
     try:
         url = 'https://www.rba.gov.au/media-releases/'
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9,en-AU;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Cache-Control': 'max-age=0'
         }
-        response = requests.get(url, headers=headers, timeout=30)
+        response = requests.get(url, headers=headers, timeout=60, allow_redirects=True)
         response.raise_for_status()
         
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -717,19 +804,26 @@ def fetch_rba_news():
         return []
 
 def parse_rss_feed(url):
-    """Parse RSS feed and extract entries with retry logic"""
+    """Parse RSS feed and extract entries with retry logic and browser mimicry"""
     max_attempts = 3
     timeout = 60  # Increased to 60 seconds
     
     for attempt in range(max_attempts):
         try:
-            # Fetch the feed with a timeout first
+            # Comprehensive browser-like headers
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/rss+xml,application/xml;q=0.9,application/xhtml+xml,text/html;q=0.8,*/*;q=0.7',
+                'Accept-Language': 'en-US,en;q=0.9,en-AU;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'DNT': '1',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'Cache-Control': 'max-age=0'
             }
             
             print(f"  Attempt {attempt + 1}/{max_attempts} to fetch RSS feed...")
-            response = requests.get(url, headers=headers, timeout=timeout)
+            response = requests.get(url, headers=headers, timeout=timeout, allow_redirects=True)
             response.raise_for_status()
             
             # Parse the fetched content
