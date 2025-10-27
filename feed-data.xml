@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2025-10-27T03:50:50.610657">
+<feed version="1.0" updated="2025-10-27T13:51:15.607253">
   <entry>
     <source>ACCC News</source>
     <title>Microsoft in court for allegedly misleading millions of Australians over Microsoft 365 subscriptions</title>
@@ -1364,5 +1364,17 @@ Phone:
 +61 2 9551 8111
 Email:
 rbainfo@rba.gov.au</full_text>
+  </entry>
+  <entry>
+    <source>ASIC Media Releases</source>
+    <title>ASIC secures interim court orders barring Ferras Merhi from financial services activities</title>
+    <link>https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-249mr-asic-secures-interim-court-orders-barring-ferras-merhi-from-financial-services-activities/</link>
+    <published/>
+    <summary>Insufficient article text for analysis</summary>
+    <industry>Other</industry>
+    <industry_rationale>Insufficient text for classification</industry_rationale>
+    <risk_rating>Not Rated</risk_rating>
+    <risk_rationale>Insufficient text for assessment</risk_rationale>
+    <full_text>Content not available</full_text>
   </entry>
 </feed>
