@@ -1,5 +1,93 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2025-10-26T13:19:14.243835">
+<feed version="1.0" updated="2025-10-27T03:50:50.610657">
+  <entry>
+    <source>ACCC News</source>
+    <title>Microsoft in court for allegedly misleading millions of Australians over Microsoft 365 subscriptions</title>
+    <link>https://www.accc.gov.au/media-release/microsoft-in-court-for-allegedly-misleading-millions-of-australians-over-microsoft-365-subscriptions</link>
+    <published>Sun, 26 Oct 2025 22:30:00 +0000</published>
+    <summary>Summary generation failed</summary>
+    <industry>Other</industry>
+    <industry_rationale>Industry classification could not be completed</industry_rationale>
+    <risk_rating>Assessment Failed</risk_rating>
+    <risk_rationale>Risk assessment could not be completed</risk_rationale>
+    <full_text>Date
+27 October 2025
+Topics
+Buying and selling products and services
+Compliance and enforcement
+The ACCC has commenced proceedings in the Federal Court against Microsoft Australia and its parent company Microsoft Corporation for allegedly misleading approximately 2.7 million Australian customers when communicating subscription options and price increases, after it integrated its AI assistant, Copilot, into Microsoft 365 plans.
+The ACCC alleges that since 31 October 2024, Microsoft has told subscribers of Microsoft 365 Personal and Family plans with auto-renewal enabled that to maintain their subscription they must accept the integration of Copilot and pay higher prices for their plan, or, alternatively, cancel their subscription.
+The ACCC alleges this information provided to subscribers was false or misleading because there was an undisclosed third option, the Microsoft 365 Personal or Family Classic plans, which allowed subscribers to retain the features of their existing plan, without Copilot, at the previous lower price.
+Microsoft’s communication with subscribers did not refer to the existence of the “Classic” plans, and the only way subscribers could access them was to begin the process of cancelling their subscription. This involved navigating to the subscriptions section of their Microsoft account and selecting “Cancel subscription”. It was only on the following page that subscribers were given the option to instead move to the Classic plan. See a
+screenshot of the cancellation page revealing the Classic plan
+.
+“Following a detailed investigation, we will allege in Court that Microsoft deliberately omitted reference to the Classic plans in its communications and concealed their existence until after subscribers initiated the cancellation process to increase the number of consumers on more expensive Copilot-integrated plans,” ACCC Chair Gina Cass-Gottlieb said.
+“The Microsoft Office apps included in 365 subscriptions are essential in many people’s lives and given there are limited substitutes to the bundled package, cancelling the subscription is a decision many would not make lightly.”
+“We’re concerned that Microsoft’s communications denied its customers the opportunity to make informed decisions about their subscription options, which included the possibility of retaining all the features of their existing plan without Copilot and at the lower price,” Ms Cass-Gottlieb said.
+“We believe many Microsoft 365 customers would have opted for the Classic plan had they been aware of all the available options.”
+Following the integration of Copilot, the annual subscription price of the Microsoft 365 Personal plan increased by 45 per cent from $109 to $159. The annual subscription price for the Microsoft 365 Family plan increased by 29 per cent from $139 to $179.
+Microsoft sent two emails and published a blog post to inform auto-renewing subscribers (as of 31 October 2024) about the Copilot integration and the impending price increase that would apply at their next renewal. These three pieces of communication are central to the ACCC’s case.
+“We allege that Microsoft’s two emails to existing subscribers and the blog post were false or misleading as they conveyed that consumers had to accept the more expensive Copilot-integrated plans, and that the only other option was to cancel,” Ms Cass-Gottlieb said.
+“All businesses need to provide accurate information about their services and prices. Failure to do so risks breaching the Australian Consumer Law,” Ms Cass-Gottlieb said.
+In establishing its investigation into this matter, the ACCC drew on a significant number of consumer reports, as well as commentary in online forums such as Reddit. Information provided by consumers to the ACCC’s Infocentre was critical to alerting the ACCC to the alleged conduct, particularly in identifying the availability of the Classic plan through subscribers’ cancellation flows.
+The ACCC is seeking orders including penalties, injunctions, declarations, consumer redress, and costs.
+Consumer response
+The ACCC believes the millions of Australian consumers who were allegedly misled by Microsoft about the availability of the Classic plan may have suffered economic harm through the automatic renewal of their subscription with Copilot integration at a higher price.
+The ACCC is seeking consumer redress in this case for Microsoft 365 Personal and Family subscribers affected by the alleged conduct.
+Existing Microsoft 365 Personal and Family subscribers who have not had their subscription renewed since 8 July 2025 and would like to revert to their previous plan may be able to select the cancel option and follow the steps in the cancellation process until the Classic plan is offered. However, the ACCC notes that the subscription options and prices offered are entirely in Microsoft’s control and could be subject to change at any time.
+Example timeline for a subscriber on a Microsoft 365 Personal plan
+On 19 April 2024, a consumer purchased an annual Microsoft 365 Personal subscription for $109 and enabled auto-renewal for one year’s time.
+On 31 October 2024, Microsoft published a blog post in which it stated:
+“
+To reflect the value we’ve added over the past decade and enable us to deliver new innovations for years to come, we’re increasing the prices of Microsoft 365 Personal and Family. The price increase will apply to existing subscribers upon their next renewal.
+”
+On 9 January 2025, the consumer received an email informing them that AI features were being added to their plan and the price of the annual subscription would increase from $109 to $159 starting on 19 April 2025. See a
+screenshot of the first email sent to the consumers about the price increase
+.
+On 13 April 2025, 7 days before their renewal date, the consumer received a second email in which Microsoft stated:
+“
+We want to let you know about a change to the amount of your next payment. Unless you cancel two days before Saturday, April 19 2025, we’ll charge AUD 159.00 including taxes every year… We’ll tell you if this price ever changes. Cancel any time to stop future charges or change how you pay by managing your subscription in your Microsoft account.
+”
+On 19 April 2025, the consumer's subscription was automatically renewed at the increased price of $159.  The consumer was not aware that switching to the Classic plan at the existing subscription price of $109 was possible.
+Screenshots showing the communications with subscribers
+Email sent to subscribers informing them of the Copilot integration and price increase
+The page late in the cancellation process revealing the Classic plan
+A subscriber only saw this screen once they had navigated to the subscriptions section of their Microsoft account, selected “Cancel subscription”, and continued with the cancellation process.
+Background
+Microsoft Pty Ltd (Microsoft AU) is an Australian proprietary company, and a wholly owned subsidiary of the Microsoft Corporation (Microsoft US), a US-based technology conglomerate. Microsoft AU is the supplier of Microsoft’s proprietary software in Australia, including Microsoft 365 plans.
+The ACCC alleges Microsoft US was responsible for preparing and publishing the communications to Australian Microsoft 365 subscribers containing the misrepresentations alleged by the ACCC. The ACCC alleges that Microsoft AU adopted the communications as the seller of Microsoft 365 subscriptions to Australian consumers.
+The ACCC’s case only relates to Microsoft 365 Personal and Family plans, which are designed for home use. The case does not involve Microsoft 365 subscriptions for business or enterprise.
+Microsoft 365 Personal and Family offerings are supplied on a monthly or annual subscription basis, and are comprised of:
+software products, such as Word, Excel, PowerPoint and OneNote
+collaboration and communication applications like Outlook, Teams and SharePoint
+cloud-based services through OneDrive.
+Microsoft launched Copilot as its consumer-facing generative AI product in 2023. Copilot was integrated into Microsoft 365 Personal and Family subscriptions in Australia on 31 October 2024.
+In January 2025, the Copilot integration was rolled out across Microsoft 365 worldwide, with varying subscription price increases applying to each jurisdiction.
+Competition, product safety, consumer and fair trading issues in the digital economy is a current ACCC
+compliance and enforcement priority
+.
+Maximum penalties
+For corporations, the maximum penalty for each breach of the Australian Consumer Law is the greater of:
+$50 million
+three times the total benefits that have been obtained and are reasonably attributable, or
+if the total value of the benefits cannot be determined, 30 per cent of the corporation’s adjusted turnover during the breach turnover period.
+Any penalty that might apply to this conduct is a matter for the Court to determine and would depend on the Court’s findings. The ACCC will not comment on what penalties the Court may impose.
+Concise statement
+ACCC v Microsoft Concise Statement 27 October 2025
+(
+PDF 1.6 MB
+)
+This document contains the ACCC’s initiating court documents in relation to this matter. We will not be uploading further documents in the event these initial documents are subsequently amended.
+Release number
+118/25
+General enquiries
+Submit an online enquiry
+to ask a question or you can
+make a report
+to help us understand where there are problems.
+Media enquiries
+media@accc.gov.au or 1300 138 917. The media team is only able to answer requests and questions from journalists. Please only call this number if you are a journalist.</full_text>
+  </entry>
   <entry>
     <source>ASIC Media Releases</source>
     <title>Auditor of United Global Capital and related entities cancelled by Companies Auditors Disciplinary Board</title>
