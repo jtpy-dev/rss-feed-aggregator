@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2025-10-31T03:40:50.041623">
+<feed version="1.0" updated="2025-10-31T13:49:29.147955">
   <entry>
     <source>ACCC News</source>
     <title>The promise of competition and the responsibility of leadership</title>
@@ -1631,6 +1631,30 @@ rbainfo@rba.gov.au</full_text>
     <source>ASIC Media Releases</source>
     <title>ASIC highlights financial reporting and audit findings for FY 2024–25 as part of expanded program of work</title>
     <link>https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-256mr-asic-highlights-financial-reporting-and-audit-findings-for-fy-2024-25-as-part-of-expanded-program-of-work/</link>
+    <published/>
+    <summary>Insufficient article text for analysis</summary>
+    <industry>Other</industry>
+    <industry_rationale>Insufficient text for classification</industry_rationale>
+    <risk_rating>Not Rated</risk_rating>
+    <risk_rationale>Insufficient text for assessment</risk_rationale>
+    <full_text>Content not available</full_text>
+  </entry>
+  <entry>
+    <source>ASIC Media Releases</source>
+    <title>Freezing orders against Gregory Cotton and First Mutual Private Equity continue</title>
+    <link>https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-260mr-freezing-orders-against-gregory-cotton-and-first-mutual-private-equity-continue/</link>
+    <published/>
+    <summary>Insufficient article text for analysis</summary>
+    <industry>Other</industry>
+    <industry_rationale>Insufficient text for classification</industry_rationale>
+    <risk_rating>Not Rated</risk_rating>
+    <risk_rationale>Insufficient text for assessment</risk_rationale>
+    <full_text>Content not available</full_text>
+  </entry>
+  <entry>
+    <source>ASIC Media Releases</source>
+    <title>Charges against Dean Scook, former officer of Rock Mining Australia Limited, have been discontinued</title>
+    <link>https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-259mr-charges-against-dean-scook-former-officer-of-rock-mining-australia-limited-have-been-discontinued/</link>
     <published/>
     <summary>Insufficient article text for analysis</summary>
     <industry>Other</industry>
