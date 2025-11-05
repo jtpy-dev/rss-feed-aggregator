@@ -648,5 +648,18 @@
     "risk_rationale": "Risk assessment could not be completed",
     "industry": "Other",
     "industry_rationale": "Industry classification could not be completed"
+  },
+  {
+    "title": "A roadmap for capital markets to grow our economy",
+    "link": "https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-264mr-a-roadmap-for-capital-markets-to-grow-our-economy/",
+    "published": "",
+    "summary": "",
+    "source": "ASIC Media Releases",
+    "full_text": "Content not available",
+    "ai_summary": "Insufficient article text for analysis",
+    "risk_rating": "Not Rated",
+    "risk_rationale": "Insufficient text for assessment",
+    "industry": "Other",
+    "industry_rationale": "Insufficient text for classification"
   }
 ]
