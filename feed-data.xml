@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2025-11-11T03:44:16.159624">
+<feed version="1.0" updated="2025-11-11T13:45:47.689439">
   <entry>
     <source>ACCC News</source>
     <title>Independent petrol retailers give motorists choice and can lead to lower petrol prices</title>
@@ -2228,6 +2228,18 @@ rbainfo@rba.gov.au</full_text>
     <source>ASIC Media Releases</source>
     <title>ASIC drives car finance providers to improve consumer outcomes</title>
     <link>https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-269mr-asic-drives-car-finance-providers-to-improve-consumer-outcomes/</link>
+    <published/>
+    <summary>Insufficient article text for analysis</summary>
+    <industry>Other</industry>
+    <industry_rationale>Insufficient text for classification</industry_rationale>
+    <risk_rating>Not Rated</risk_rating>
+    <risk_rationale>Insufficient text for assessment</risk_rationale>
+    <full_text>Content not available</full_text>
+  </entry>
+  <entry>
+    <source>ASIC Media Releases</source>
+    <title>ASIC disqualifies NSW hospitality director for five years</title>
+    <link>https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-272mr-asic-disqualifies-nsw-hospitality-director-for-five-years/</link>
     <published/>
     <summary>Insufficient article text for analysis</summary>
     <industry>Other</industry>
