@@ -32,7 +32,7 @@ os.environ['GLOG_minloglevel'] = '2'
 #
 # Get your free API key from: https://aistudio.google.com/app/apikey
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
-GEMINI_MODEL = "gemini-2.0-flash-exp"  # Gemini 2.0 Flash (experimental, free tier available)
+GEMINI_MODEL = "gemini-2.0-flash"  # Gemini 2.0 Flash (experimental, free tier available)
 
 # Rate limiting: Gemini free tier has generous limits
 # 15 requests per minute, 1500 requests per day for free tier
