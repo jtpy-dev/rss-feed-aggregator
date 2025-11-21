@@ -1,5 +1,44 @@
 [
   {
+    "title": "APRA releases response to minor framework updates for ADIs, insurers and RSE licensees",
+    "link": "https://www.apra.gov.au/news-and-publications/apra-releases-response-to-minor-framework-updates-for-adis-insurers-and-rse",
+    "published": "21 November 2025",
+    "summary": "",
+    "source": "APRA News",
+    "full_text": "Media Releases APRA releases response to minor framework updates for ADIs, insurers and RSE licensees Friday 21 November 2025 Print Email The Australian Prudential Regulation Authority (APRA) has released a response to consultation on proposed minor amendments to the prudential and reporting framework for authorised deposit-taking institutions (ADIs), insurers and registrable superannuation entity (RSE) licensees. The response letter issued today follows the release of the proposed update for consultation in September 2025. These minor updates help APRA keep the prudential framework up-to-date between comprehensive reviews. The letter to industry, finalised prudential and reporting standards and non-confidential submissions are available on the APRA website at: Minor updates to the prudential framework . Media enquiries Contact APRA Media Unit, on +61 2 9210 3636 All other enquiries For more information contact APRA on 1300 558 849 . The Australian Prudential Regulation Authority (APRA) is the prudential regulator of the financial services industry. It oversees banks, mutuals, general insurance and reinsurance companies, life insurance, private health insurers, friendly societies, and most members of the superannuation industry. APRA currently supervises institutions holding around $9 trillion in assets for Australian depositors, policyholders and superannuation fund members.",
+    "ai_summary": "APRA has finalized minor updates to the prudential and reporting framework for ADIs, insurers, and RSE licensees. These updates, designed to keep the framework current between comprehensive reviews, follow a consultation period that began in September 2025.\nHere are the key takeaways:\n*   **Minor Amendments Finalized:** APRA has finalized minor amendments to the prudential and reporting framework.\n*   **Affected Entities:** The updates apply to Authorised Deposit-taking Institutions (ADIs), insurers, and Registrable Superannuation Entity (RSE) licensees.\n*   **Purpose of Updates:** The changes aim to maintain the relevance and effectiveness of the prudential framework between major reviews.\n*   **Documentation Available:** The response letter, finalized standards, and non-confidential submissions are available on the APRA website under \"Minor updates to the prudential framework.\"",
+    "risk_rating": "Low",
+    "risk_rationale": "The media release explicitly states that the updates are \"minor amendments\" intended to \"keep the prudential framework up-to-date between comprehensive reviews.\" This suggests a limited scope and impact. The release refers to \"finalised prudential and reporting standards,\" indicating some level of procedural or reporting changes, but the \"minor\" descriptor implies that these changes are not substantial. It is assumed the consultation process refined the changes, and the impact should be within manageable parameters for the affected entities.",
+    "risk_confidence": "High",
+    "industries": [
+      "Banks",
+      "Insurance",
+      "Financial Services"
+    ],
+    "industry": "Banks",
+    "industry_rationale": "The media release explicitly mentions authorised deposit-taking institutions (ADIs), insurers, and registrable superannuation entity (RSE) licensees, which fall under the Banks, Insurance, and Financial Services Industry Groups respectively. APRA's role as the prudential regulator overseeing these entities and updating their prudential and reporting framework further solidifies the impact on these specific industry groups.",
+    "industry_confidence": "High"
+  },
+  {
+    "title": "ASIC suspends AFSL of Centurion Capital Limited",
+    "link": "https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-279mr-asic-suspends-afsl-of-centurion-capital-limited/",
+    "published": "21 November 2025",
+    "summary": "",
+    "source": "ASIC Media Releases",
+    "full_text": "Print Share Twitter Facebook LinkedIn Email ASIC has suspended the Australian financial services (AFS) licence of Centurion Capital Limited (Centurion) until 21 April 2026. The AFS licence was suspended because Centurion failed to meet its statutory audit and financial reporting lodgement obligations for the company and the BTR Real Estate Investment Fund (Fund) for the financial years ending 2022, 2023 and 2024. At the end of the suspension period, ASIC may take further action if Centurion fails to rectify these breaches. Centurion may apply to the Administrative Review Tribunal for a review of ASIC’s decision. Background Centurion has held an AFSL since 22 December 2009. The licence authorises Centurion to provide financial product advice and deal in a range of financial products, operate the Fund and provide custodial and depository services to retail and wholesale clients.",
+    "ai_summary": "Here's a summary of the article, focusing on key information for compliance officers and business executives:\nThis article reports that the Australian Securities and Investments Commission (ASIC) has suspended the Australian Financial Services (AFS) license of Centurion Capital Limited due to failures in meeting statutory audit and financial reporting obligations.\n*   **AFS License Suspension:** ASIC has suspended Centurion Capital Limited's AFS license until April 21, 2026.\n*   **Reason for Suspension:** The suspension is due to Centurion's failure to lodge required statutory audits and financial reports for both the company and the BTR Real Estate Investment Fund for the financial years ending 2022, 2023, and 2024.\n*   **Potential Further Action:** ASIC may take further action at the end of the suspension period if Centurion does not rectify the breaches.\n*   **Right to Appeal:** Centurion has the right to apply to the Administrative Review Tribunal for a review of ASIC's decision.",
+    "risk_rating": "High",
+    "risk_rationale": "The suspension of Centurion Capital Limited's AFS licence until 2026 indicates a \"High\" impact. The text states that Centurion \"failed to meet its statutory audit and financial reporting lodgement obligations\" for multiple years, signifying serious compliance failures. This directly impacts Centurion's ability to \"provide financial product advice and deal in a range of financial products, operate the Fund and provide custodial and depository services\", causing major operational changes. The potential for further action by ASIC and the right for Centurion to appeal to the Administrative Review Tribunal further support a \"High\" impact rating.",
+    "risk_confidence": "High",
+    "industries": [
+      "Diversified Financials",
+      "Real Estate"
+    ],
+    "industry": "Diversified Financials",
+    "industry_rationale": "The media release directly names Centurion Capital Limited, an entity providing financial product advice and dealing in financial products, pointing to the Diversified Financials Industry Group. Furthermore, the company operates the BTR Real Estate Investment Fund, indicating a direct impact on the Real Estate Industry Group through the management and operation of real estate-related investments.",
+    "industry_confidence": "High"
+  },
+  {
     "title": "APRA publishes new report on financial system risks",
     "link": "https://www.apra.gov.au/news-and-publications/apra-publishes-new-report-on-financial-system-risks",
     "published": "20 November 2025",
