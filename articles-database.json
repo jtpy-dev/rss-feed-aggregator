@@ -39,6 +39,25 @@
     "industry_confidence": "High"
   },
   {
+    "title": "QLD shadow director charged with $8m debt factoring fraud involving Bunnings Warehouse",
+    "link": "https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-280mr-qld-shadow-director-charged-with-8m-debt-factoring-fraud-involving-bunnings-warehouse/",
+    "published": "21 November 2025",
+    "summary": "",
+    "source": "ASIC Media Releases",
+    "full_text": "Print Share Twitter Facebook LinkedIn Email Mr Brent Young of Queensland has appeared at the Brisbane Magistrates Court today 21 November 2025 charged with one count of fraud and one count of managing a corporation whilst disqualified. Following an ASIC investigation, it is alleged that between 30 September 2020 and 30 June 2023 Mr Young, whilst acting as a shadow director of HWT Group Australia Pty Ltd (HWT Group), created and lodged over 10,000 fraudulent invoices with a Queensland-based finance provider to obtain over $8.3 million dollars in advanced payments under a debt factoring agreement Mr Young setup on behalf of HWT Group. Debt factoring is where a business makes an agreement with a third-party finance provider to sell its unpaid invoices (accounts receivable) at a discount to receive cash prior to the invoices being due for payment. ASIC alleges Mr Young created invoices issued to Bunnings Warehouse for payment of goods shipped to various stores, whilst neither Mr Young nor HWT Group had any existing business relationship with Bunnings relating to those goods. At the time of the offences, Mr Young was bankrupt and was therefore automatically disqualified from managing corporations. The matter has been adjourned to 19 December 2025 for mention. Background The charge of fraud is pursuant to section 408C of the Criminal Code 1899 (Qld) and carries a maximum penalty of 20 years’ imprisonment. The charge of managing a corporation whilst disqualified from doing so is pursuant to section 206A of the Corporations Act 2001 (Cth) and carries a maximum penalty of 5 years’ imprisonment. The matter is being prosecuted by the Office of the Director of Public Prosecutions (Cth) (CDPP).",
+    "ai_summary": "This article reports on charges filed against a Queensland man for alleged fraud and managing a corporation while disqualified, stemming from a debt factoring scheme involving falsified invoices purportedly issued to Bunnings Warehouse. Here are the key takeaways:\n*   **Fraudulent Debt Factoring:** Brent Young, allegedly acting as a shadow director of HWT Group Australia Pty Ltd, is accused of creating over 10,000 fraudulent invoices to obtain over $8.3 million in advanced payments through a debt factoring agreement.\n*   **Bunnings Warehouse Implication:** The fraudulent invoices were allegedly issued to Bunnings Warehouse, despite no business relationship between HWT Group and Bunnings for the goods described in the invoices.\n*   **Disqualification:** At the time of the alleged offences (September 2020 - June 2023), Mr. Young was bankrupt and therefore disqualified from managing corporations.\n*   **Legal Consequences:** Mr. Young faces charges under the Criminal Code 1899 (Qld) for fraud (maximum 20 years imprisonment) and the Corporations Act 2001 (Cth) for managing a corporation while disqualified (maximum 5 years imprisonment).\n*   **Court Adjournment:** The case has been adjourned to December 19, 2025, for mention.",
+    "risk_rating": "Moderate",
+    "risk_rationale": "The media release describes allegations of fraud and managing a corporation whilst disqualified, carrying maximum penalties of 20 and 5 years imprisonment, respectively. This suggests a *moderate* impact as it highlights potential compliance risks and could lead to increased scrutiny of debt factoring agreements and shadow director activities. The potential for significant prison sentences indicates a serious breach of corporate governance. While the case is still pending, the allegations involve a substantial sum ($8.3 million) and a well-known company (Bunnings), potentially prompting firms to review their internal controls related to financial transactions and director oversight.",
+    "risk_confidence": "High",
+    "industries": [
+      "Banks",
+      "Financial Services"
+    ],
+    "industry": "Banks",
+    "industry_rationale": "The media release details a fraud involving debt factoring, a financial service provided by finance providers, and the fraudulent creation of invoices to obtain advanced payments. This directly impacts the Banks and Financial Services industries, as these entities are involved in providing and utilizing debt factoring services. The mention of a \"Queensland-based finance provider\" and the nature of debt factoring agreements underscore this connection.",
+    "industry_confidence": "High"
+  },
+  {
     "title": "APRA publishes new report on financial system risks",
     "link": "https://www.apra.gov.au/news-and-publications/apra-publishes-new-report-on-financial-system-risks",
     "published": "20 November 2025",
