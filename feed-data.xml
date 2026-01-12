@@ -1,5 +1,20 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2026-01-11T12:57:55.431291">
+<feed version="1.0" updated="2026-01-12T02:27:15.545464">
+  <entry>
+    <source>APRA News</source>
+    <title>APRA announces executive departure</title>
+    <link>https://www.apra.gov.au/news-and-publications/apra-announces-executive-departure</link>
+    <published>12 January 2026</published>
+    <summary>Summary generation failed</summary>
+    <industries>Other</industries>
+    <industry>Other</industry>
+    <industry_rationale>Industry classification could not be completed</industry_rationale>
+    <industry_confidence>N/A</industry_confidence>
+    <risk_rating>Assessment Failed</risk_rating>
+    <risk_rationale>Impact assessment could not be completed</risk_rationale>
+    <risk_confidence>N/A</risk_confidence>
+    <full_text>Media Releases APRA announces executive departure Monday 12 January 2026 Print Email The Australian Prudential Regulation Authority (APRA) advises that Carmen Beverley-Smith, Executive Director Life Insurance, Private Health Insurance and Superannuation (LPHIS), has resigned to take up an opportunity in a senior position at a regulated entity and therefore leaves APRA with immediate effect. LPHIS General Manager Peter Kohlhagen will be acting LPHIS Executive Director on an interim basis until the Executive Director role is permanently filled.  APRA will seek to fill the vacant Executive Director position as soon as possible. Media enquiries Contact APRA Media Unit, on +61 2 9210 3636 All other enquiries For more information contact APRA on 1300 558 849 . The Australian Prudential Regulation Authority (APRA) is the prudential regulator of the financial services industry. It oversees banks, mutuals, general insurance and reinsurance companies, life insurance, private health insurers, friendly societies, and most members of the superannuation industry. APRA currently supervises institutions holding around $9 trillion in assets for Australian depositors, policyholders and superannuation fund members.</full_text>
+  </entry>
   <entry>
     <source>ASIC Media Releases</source>
     <title>ASIC suspends Australian credit licence of Transitional Funding Pty Ltd</title>
