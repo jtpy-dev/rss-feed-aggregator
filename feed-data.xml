@@ -1,5 +1,20 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2026-01-28T13:09:00.002487">
+<feed version="1.0" updated="2026-01-29T02:40:57.266256">
+  <entry>
+    <source>RBA Media Releases</source>
+    <title>Technology Outage</title>
+    <link>https://www.rba.gov.au/media-releases/2026/mr-26-02.html</link>
+    <published>29 January 2026</published>
+    <summary>Summary generation failed</summary>
+    <industries>Other</industries>
+    <industry>Other</industry>
+    <industry_rationale>Industry classification could not be completed</industry_rationale>
+    <industry_confidence>N/A</industry_confidence>
+    <risk_rating>Assessment Failed</risk_rating>
+    <risk_rationale>Impact assessment could not be completed</risk_rationale>
+    <risk_confidence>N/A</risk_confidence>
+    <full_text>Statement Technology Outage Number 2026-02 Date 29 January 2026 The Reserve Bank experienced a system issue on the morning of 27 January 2026 that affected some RBA payment settlement services, including certain payments and property settlements. The issue occurred at around 10:30 am and resulted in some file based payments being unable to be processed. The cause of the outage was identified, and services were progressively restored, with file exchange services becoming available from around 5:20 pm the same day. The Fast Settlement Service was not affected. A subsequent issue further delayed some PEXA property settlements, resulting in around 500 property transactions not being completed before the end of the settlement day, which was extended to 10:45 pm. The Reserve Bank has been working closely with industry participants and remains in regular contact to support recovery and resolution. Following the restoration of RBA services on Tuesday, financial institutions were able to resume exchanging payment files and progressively process payments, including those delayed by the outage. The RBA apologises for the disruption caused and recognises the impact this would have had on financial institutions and their customers. As there have been no further system issues at the RBA since late Tuesday evening, customers experiencing difficulties with transactions or payment delays should contact their own financial institution to discuss the matter. Enquiries Communications Department Reserve Bank of Australia SYDNEY Phone: +61 2 9551 8111 Email: rbainfo@rba.gov.au</full_text>
+  </entry>
   <entry>
     <source>APRA News</source>
     <title>APRA Explains: APRA’s role in private health insurance premium increases</title>
