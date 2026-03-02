@@ -1,5 +1,20 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2026-03-01T13:06:14.970370">
+<feed version="1.0" updated="2026-03-02T02:45:51.101702">
+  <entry>
+    <source>APRA News</source>
+    <title>APRA revokes Bank of Nova Scotia’s authorised deposit-taking institution licence</title>
+    <link>https://www.apra.gov.au/news-and-publications/apra-revokes-bank-of-nova-scotia%E2%80%99s-authorised-deposit-taking-institution</link>
+    <published>2 March 2026</published>
+    <summary>Summary generation failed</summary>
+    <industries>Other</industries>
+    <industry>Other</industry>
+    <industry_rationale>Industry classification could not be completed</industry_rationale>
+    <industry_confidence>N/A</industry_confidence>
+    <risk_rating>Assessment Failed</risk_rating>
+    <risk_rationale>Impact assessment could not be completed</risk_rationale>
+    <risk_confidence>N/A</risk_confidence>
+    <full_text>Media Releases APRA revokes Bank of Nova Scotia’s authorised deposit-taking institution licence Monday 2 March 2026 Print Email The Australian Prudential Regulation Authority (APRA) has agreed to a request from the Bank of Nova Scotia to revoke its licence to operate as an authorised deposit-taking institution (ADI) following its decision to exit the Australian banking market. The updated list of all APRA-authorised ADIs is available on the APRA website at: Register of authorised deposit-taking institutions . Media enquiries Contact APRA Media Unit, on +61 2 9210 3636 All other enquiries For more information contact APRA on 1300 558 849 . The Australian Prudential Regulation Authority (APRA) is the prudential regulator of the financial services industry. It oversees banks, mutuals, general insurance and reinsurance companies, life insurance, private health insurers, friendly societies, and most members of the superannuation industry. APRA currently supervises institutions holding $9.8 trillion in assets for Australian depositors, policyholders and superannuation fund members.</full_text>
+  </entry>
   <entry>
     <source>APRA News</source>
     <title>APRA releases Monthly Authorised Deposit-taking Institution Statistics for January 2026</title>
