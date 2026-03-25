@@ -1,5 +1,20 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2026-03-24T13:30:30.682799">
+<feed version="1.0" updated="2026-03-25T02:50:58.130085">
+  <entry>
+    <source>APRA News</source>
+    <title>Payday Super Readiness</title>
+    <link>https://www.apra.gov.au/news-and-publications/payday-super-readiness</link>
+    <published>25 March 2026</published>
+    <summary>Summary generation failed</summary>
+    <industries>Other</industries>
+    <industry>Other</industry>
+    <industry_rationale>Industry classification could not be completed</industry_rationale>
+    <industry_confidence>N/A</industry_confidence>
+    <risk_rating>Assessment Failed</risk_rating>
+    <risk_rationale>Impact assessment could not be completed</risk_rationale>
+    <risk_confidence>N/A</risk_confidence>
+    <full_text>Media Releases Payday Super Readiness Wednesday 25 March 2026 Print Email The Australian Prudential Regulation Authority (APRA) and the Australian Taxation Office (ATO) have today issued a letter to RSE licensees regarding the commencement of Payday Super on 1 July 2026. The letter sets out the ATO’s and APRA’s roles in the implementation of Payday Super, the relevant regulations and standards to support Payday Super, and next steps to support RSE licensee implementation readiness by 1 July 2026. The letter is available at: Payday Super Readiness Media enquiries Contact APRA Media Unit, on +61 2 9210 3636 All other enquiries For more information contact APRA on 1300 558 849 . The Australian Prudential Regulation Authority (APRA) is the prudential regulator of the financial services industry. It oversees banks, mutuals, general insurance and reinsurance companies, life insurance, private health insurers, friendly societies, and most members of the superannuation industry. APRA currently supervises institutions holding $9.8 trillion in assets for Australian depositors, policyholders and superannuation fund members.</full_text>
+  </entry>
   <entry>
     <source>APRA News</source>
     <title>APRA stress test shows how the widening home insurance protection gap may impact Australia's financial system resilience</title>
