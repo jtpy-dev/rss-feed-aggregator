@@ -1,5 +1,20 @@
 <?xml version="1.0" ?>
-<feed version="1.0" updated="2026-07-20T14:23:56.127472">
+<feed version="1.0" updated="2026-07-21T03:25:57.888375">
+  <entry>
+    <source>APRA News</source>
+    <title>APRA grants ADI licence to Revolut</title>
+    <link>https://www.apra.gov.au/news-and-publications/apra-grants-adi-licence-revolut</link>
+    <published>21 July 2026</published>
+    <summary>Summary generation failed</summary>
+    <industries>Other</industries>
+    <industry>Other</industry>
+    <industry_rationale>Industry classification could not be completed</industry_rationale>
+    <industry_confidence>N/A</industry_confidence>
+    <risk_rating>Assessment Failed</risk_rating>
+    <risk_rationale>Impact assessment could not be completed</risk_rationale>
+    <risk_confidence>N/A</risk_confidence>
+    <full_text>The Australian Prudential Regulation Authority (APRA) has granted Revolut Payments Australia Pty Ltd a licence to operate as an authorised-deposit taking institution (ADI) under the Banking Act 1959 (the Act). Concurrently, APRA has also licensed Revolut Australia NOHC Pty Ltd as a non-operating holding company (NOHC) under the Act. An updated list of all APRA-authorised ADIs and NOHCs can be found on the APRA website at: List of registered authorised deposit-taking institutions and List of non-operating holding companies . Media enquiries Contact APRA Media Unit, on +61 2 9210 3636 All other enquiries For more information contact APRA on 1300 558 849 . The Australian Prudential Regulation Authority (APRA) is the prudential regulator of the financial services industry. It oversees banks, mutuals, general insurance and reinsurance companies, life insurance, private health insurers, friendly societies, and most members of the superannuation industry. APRA currently supervises institutions holding around $9.8 trillion in assets for Australian depositors, policyholders and superannuation fund members. Footnotes</full_text>
+  </entry>
   <entry>
     <source>ASIC Media Releases</source>
     <title>ASIC secures record $830 million in civil penalties orders and $644 million back to Australians in 2025-26</title>
