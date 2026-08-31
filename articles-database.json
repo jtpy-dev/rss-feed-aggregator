@@ -18,6 +18,96 @@
     "industry_confidence": "N/A"
   },
   {
+    "title": "Response to consultation on transition of Life Insurance D2A data collections to APRA Connect",
+    "link": "https://www.apra.gov.au/news-and-publications/response-consultation-transition-life-insurance-d2a-data-collections-apra",
+    "published": "31 August 2026",
+    "summary": "",
+    "source": "APRA News",
+    "full_text": "The Australian Prudential Regulation Authority (APRA) is finalising the updated Reporting Standard LRS 112.3 Related Party Exposures (LRS 112.3), Reporting Standard LRS 114.2 Derivatives Activity (LRS114.2) and Reporting Standard LRS 114.3 Off-balance Sheet Business (LRS 114.3). These three reporting standards required life companies to submit data to APRA via Direct to APRA (D2A). In March 2026, APRA announced it has decommissioned D2A . The changes to these collections will provide life companies with a single reporting platform (APRA Connect) and APRA anticipates it will lead to reduced reporting requirements overall by streamlining data management processes, making it easier and more efficient for life companies to submit data. APRA consulted on amendments to these reporting standards between April and July 2026. Consultation feedback and APRA’s response No submissions were made to this consultation. APRA has made some minor amendments to the reporting standards to improve consistency and clarity. For further information about these amendments, please refer to the final marked-up and clean reporting standards available on the webpage for this consultation. Next steps The revised reporting standards will apply to reporting periods ending on or after 31 December 2026. Life companies should continue to use the alternative submission arrangements for D2A collections until the revised standards come into effect. The updated collections will be available in APRA Connect External Test environment by the end of September 2026 and taxonomy artefacts for these collections will be published shortly after this. Further Information Should you have any questions regarding this consultation or require further information, please contact APRA at dataconsultations@apra.gov.au . Yours sincerely, Andy Robertson Chief Data Officer Data, Technology and Security Division Using APRA Connect Refer to the APRA Connect support material which includes the Guide and frequently asked questions. Contact the team at dataanalytics@apra.gov.au . Technical issues? Log a support request with the Service Desk at support@apra.gov.au and ensure that you include the ABN of the entity the issue relates to. For urgent issues call +61 2 9210 3400 between 9am and 5pm AEST weekdays. Need help with Digital ID? Please refer to published material for help with the Australian Government, myID and RAM Footnotes",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
+    "title": "APRA releases Monthly Authorised Deposit-taking Institution Statistics for July 2026",
+    "link": "https://www.apra.gov.au/news-and-publications/apra-releases-monthly-authorised-deposit-taking-institution-statistics-july-5",
+    "published": "31 August 2026",
+    "summary": "",
+    "source": "APRA News",
+    "full_text": "The Australian Prudential Regulation Authority (APRA) has released its Monthly Authorised Deposit-taking Institution Statistics (MADIS) publication for July 2026. The July 2026 publication is available on the APRA website at: Monthly Authorised Deposit-taking Institution Statistics publication . For more information Email dataanalytics@apra.gov.au or mail to Manager, External Data Reporting Australian Prudential Regulation Authority GPO Box 9836, Sydney NSW 2001 Looking for discontinued publications? Search historical snapshots of APRA's website on the Australian Government web archive. Footnotes",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
+    "title": "APRA releases superannuation statistics for June 2026",
+    "link": "https://www.apra.gov.au/news-and-publications/apra-releases-superannuation-statistics-june-2026",
+    "published": "31 August 2026",
+    "summary": "",
+    "source": "APRA News",
+    "full_text": "The Australian Prudential Regulation Authority (APRA) has released its Quarterly Superannuation Performance publication report for the June 2026 quarter. Key statistics for the superannuation industry as at 30 June 2026: - June 2025 June 2026 Change Total superannuation assets $4,353.9 billion $4,767.2 billion +9.5% Total APRA-regulated assets $3,047.4 billion $3,411.5 billion +11.9% Total self-managed super fund assets $1,068.7 billion $1,107.2 billion +3.6% Exempt public sector superannuation schemes assets $177.8 billion $187.8 billion +5.6% Balance of life office statutory fund assets $60.0 billion $60.7 billion +1.2% Total superannuation assets increased by 6.6 per cent over the quarter to $4.8 trillion as at June 2026, of which $3.4trillion was in APRA-regulated funds. Total contributions increased by 12.8 per cent to $236.3 billion in the year ending in June 2026. Employer contributions increased by 9.5 per cent over the year to $164.4 billion. Member contributions increased by 21.0 per cent over the year to $71.9 billion. Benefit payments increased by 12.1 per cent to $148.2 billion in the year ending in June 2026. This increase was the result of lump sum payments rising by 13.0 per cent to $82.5 billion and pension payments increasing by 11.0 per cent to $65.7 billion. Key statistics for entities with more than six members for the year to June 2026: - June 2025 June 2026 Change Total contributions $209.5 billion $236.3 billion +12.8% Total benefit payments $132.2 billion $148.2 billion +12.1% Net contribution flows* $70.9 billion $77.7 billion +9.6% *Net contribution flows comprise of contributions plus net benefit transfers, less benefit payments Copies of the publication are available on APRA’s website at: Quarterly superannuation statistics . For more information Email dataanalytics@apra.gov.au or mail to Manager, External Data Reporting Australian Prudential Regulation Authority GPO Box 9836, Sydney NSW 2001 Looking for discontinued publications? Search historical snapshots of APRA's website on the Australian Government web archive. Footnotes",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
+    "title": "Quarterly superannuation statistics",
+    "link": "https://www.apra.gov.au/news-and-publications/quarterly-superannuation-statistics",
+    "published": "31 August 2026",
+    "summary": "",
+    "source": "APRA News",
+    "full_text": "APRA publishes statistics on the superannuation industry on a quarterly basis. The industry performance statistics contains aggregate summaries of financial performance and position, asset allocation and key performance ratios. Statistics relating to corporate, industry, public sector and retail funds performance are also detailed. The MySuper statistics contains data relating to product profile, asset allocation targets and ranges, investment performance and net returns, as well as fees and costs. Statistics are presented at an individual product or lifecycle stage level. The Quarterly superannuation performance statistics media release is available at: APRA releases superannuation statistics for March 2026 . Quarterly superannuation performance statistics Quarterly superannuation performance statistics highlights - June 2026 The highlights provide an overall view of industry performance and insights into observed trends. Quarterly superannuation performance statistics - December 2004 to June 2026 XLSX 876.73 KB ‧ 31 August 2026 The performance statistics contains data relating to financial performance, financial position and asset allocation at an industry aggregate level. Statistics are also segmented by fund type. Glossary - Quarterly superannuation performance statistics PDF 94.70 KB ‧ 27 February 2018 Quarterly MySuper statistics Quarterly MySuper statistics from September 2020 to June 2026 XLSX 8.15 MB ‧ 31 August 2026 The MySuper statistics contains data on a product by product basis relating to asset allocation, investment performance and returns, as well as fees and costs. Quarterly MySuper statistics backseries September 2013 to June 2020 XLSX 17.17 MB ‧ 22 August 2023 The MySuper statistics backseries contains historical data presented on a quarterly basis. Glossary - Quarterly MySuper Statistics PDF 325.32 KB ‧ 27 February 2018 Next release November 2026 (September 2026 edition) Selected feature archive Superannuation Statistics Selected Feature - accrued default amounts PDF 402.64 KB ‧ 30 September 2015 This selected feature provides an overview of the transition from accrued default amounts to MySuper products offered by registered superannuation entity (RSE) licensees. MySuper statistics selected feature – MySuper products offered by RSEs PDF 927.48 KB ‧ 2 October 2014 This selected feature provides an overview of the MySuper products offered by registered superannuation entity (RSE) licensees, and the characteristics of those products. For more information Email dataanalytics@apra.gov.au or mail to Manager, External Data Reporting Australian Prudential Regulation Authority GPO Box 9836, Sydney NSW 2001 Looking for discontinued publications? Search historical snapshots of APRA's website on the Australian Government web archive. Footnotes",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
+    "title": "ASIC warns insurers cash settlements should not short-change homeowners in need",
+    "link": "https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2026-releases/26-202mr-asic-warns-insurers-cash-settlements-should-not-short-change-homeowners-in-need",
+    "published": "31 August 2026",
+    "summary": "",
+    "source": "ASIC Media Releases",
+    "full_text": "Home insurers may be leaving Australians exposed to higher repair costs by using cash settlements in a significant percentage of claims, an ASIC review has found. ASIC Commissioner Alan Kirkland said insurers who offer cash settlements need to be vigilant that their assessments reflect the true cost of repairs, and that consumers have enough information to make informed decisions. ‘For many homeowners, accepting a cash settlement, instead of the insurer managing repairs, can mean taking on the responsibility of finding tradespeople, overseeing repairs, dealing with unexpected costs and navigating issues that would otherwise be handled by the insurer,’ Mr Kirkland said. Cash settlements play major role in home insurance claims - text version What ASIC found in its home insurance cash settlements review Across all ASIC-reviewed claims 63% of home insurance claims involved a full cash settlement or partial cash settlement, where insurers repair or rebuild some of the damage Cyclone Jasper findings 2 of 5 insurers used full or partial cash settlements in more than 80% of claims 52% of cash settlement offers were based on just one quote 73% of one quote offers were from an insurer’s preferred supplier 1 in 4 claims were fully or partially cash settled due to pre-existing maintenance issues 4 of 5 insurers failed to adequately support vulnerable consumers in reviewed files Consumers need clearer information, fairer payouts and better support. Consumers may need to complain to get a fairer outcome. This review covered around 65% of the home insurance market. ASIC’s review of insurer practices revealed that full cash settlements or partial cash settlements, where insurers repair or rebuild some of the damage, were used in at least 63% of ASIC-reviewed claims. For Cyclone Jasper, two of five insurers used them in more than 80% of claims. ‘While cash settlements can offer flexibility and faster resolution, consumers must be given enough information to understand what the settlement will cover, so they can make an informed choice.’ Mr Kirkland said. More than half (52%) of the cash settlement offers ASIC reviewed were based on a single quote, with insurers often relying on quotes from preferred suppliers that may not reflect the price consumers face when arranging repairs themselves. ‘The easy option for insurers can be the expensive one for homeowners. If the amount falls short, consumers can be left shouldering the cost of repairs and paying the difference out of their own pocket,’ Mr Kirkland said. ‘If homeowners are taking on more work, more risk and potentially more costs, home insurers need to take this into account when offering to settle with cash.’ ASIC also identified concerning gaps in how insurers supported vulnerable consumers during the claims process. ‘Four of five insurers we reviewed failed to consistently apply policies in place for dealing with vulnerable customers and even when these customers were identified, some insurers did not record information or share it with third parties involved in the claim process,’ Mr Kirkland said. ASIC also found that a settlement amount can increase significantly after a consumer lodges a complaint, raising concerns about the fairness of some initial offers made by insurers. Mr Kirkland said, ‘Consumers shouldn't have to fight for a fair settlement. Australians have a right to expect a fair offer from the start. ‘Insurers need to ensure cash settlement offers are realistic, transparent and properly explained, and consumers need enough information to know if a cash payout will genuinely cover the cost of repairs, and if it is the right outcome for them.’ ASIC is calling on insurers to improve how they communicate cash settlement offers, provide clearer information about consumer rights and options, and ensure settlement amounts reflect realistic repair costs. ASIC has detailed its findings for industry today in its review: Beyond the payout: ASIC warns home insurers to reduce cash settlement risks , which details better and poorer practices. Background ASIC reviewed the use of cash settlements in home insurance claims, examining where there were risks of consumer harm. The review examined claims arising from Cyclone Jasper in Far North Queensland in 2023, as well as insurers' broader cash settlement practices and any improvements made since. This work mirrors findings from ASIC’s follow up work in June 2025, assessing how general insurers had addressed areas for improvement identified in Report 768 Navigating the storm: ASIC’s review of home insurance claims , released in August 2023. Insurers involved in this latest review included: Insurance Australia Group (IAG), including Insurance Manufacturers of Australia Pty Ltd and Insurance Australia Limited AAI Limited QBE Insurance (Australia) Limited Allianz Australia Insurance Limited Sure Insurance Pty Ltd. Related links Article: Beyond the payout: ASIC warns home insurers to reduce cash settlement risks (31 August 2026) Infographic: Cash settlements play major role in home insurance claims (31 August 2026) News: ASIC tells home insurers: Fix your oversight of independent experts and improve communication on cash settlements (5 June 2025) Report 768 Navigating the storm: ASIC’s review of home insurance claims ( REP 768 ) (16 August 2023) For consumers Consumers considering a cash settlement should: carefully consider whether the amount offered will cover the full cost of repairs ask questions if they do not understand what is included in the settlement seek independent advice if they are unsure whether the offer is appropriate understand their review rights and options if they disagree with the amount offered. You can find out more about how home insurance cash settlements work on ASIC’s free Moneysmart website for consumers.",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
     "title": "APRA releases 2026 superannuation performance test and product insights",
     "link": "https://www.apra.gov.au/news-and-publications/apra-releases-2026-superannuation-performance-test-and-product-insights",
     "published": "28 August 2026",
@@ -222,6 +312,24 @@
     "summary": "",
     "source": "ASIC Media Releases",
     "full_text": "The Australian Securities and Investments Commission (ASIC) and the Australian Prudential Regulation Authority (APRA) are urging financial market entities to move from gaining awareness of risks linked to frontier AI to taking decisive action. Both APRA and ASIC have warned publicly in recent months that frontier AI is increasing the speed, scale and sophistication of cyber threats to the financial system while also accelerating technology and operational risks. Building on those messages, the regulators hosted nine roundtables in June and July involving more than 600 attendees from across the financial system. They were supported by the Australian Signals Directorate (ASD) and included participation from the Reserve Bank of Australia, Treasury and the Australian Competition and Consumer Commission, signalling a whole-of-government response to this urgent threat. Key themes to emerge included: the importance of getting the cyber fundamentals right, including identifying and managing critical assets and systems, timely patching, strong identity and access controls, attack surface reduction, backup integrity, tested response and recovery arrangements, and third-party risk management; the need to consider key decisions such as risk appetite, escalation authority, recovery priorities and communication strategies at board level before a crisis hits, given that frontier AI compresses incident response timeframes; a growing interest in defensive AI, including for threat intelligence, vulnerability detection, code review and incident response, however it was also acknowledged that capability remains limited; common dependency and concentration risk associated with third-party service providers can turn isolated individual incidents into much broader sector-wide disruption; and the importance of actively contributing to industry-led collaboration, including sector-wide threat intelligence sharing, dependency mapping, supplier assurance and sector incident coordination. ASIC Commissioner Simone Constant said, ‘The urgency of this challenge cannot be overstated. Threat actors are exploiting frontier AI models to identify and exploit vulnerabilities that previously may have taken a team of professionals months to find. ‘Now is the time to ensure you have a strong, tested plan to respond when the worst happens. Australia's financial system is only as resilient as its weakest link. Boards and executives must move beyond awareness and ensure their organisations have well-tested response plans and understand where they are vulnerable, so they can respond effectively under pressure.’ APRA Deputy Chair Therese McCarthy Hockey said, ‘This was the first time APRA and ASIC have created forums for rapid information-sharing across such a broad cross-section of the financial sector. It highlights both regulators’ commitment to better regulatory practices that support and enable industry – especially in the face of complex and evolving risks. ‘A particularly encouraging theme that stood out was the willingness of more advanced entities to share practical insights, lessons and approaches with peers and less mature entities. This is precisely the type of ‘Team Australia’ mindset that is needed to shore up resilience across our highly interconnected financial system.’ An information paper with more insights from the roundtables, as well as a preparedness checklist for boards and executives, are available below. Download Information Paper: Resilience at Frontier AI Speed, Insights from the APRA—ASIC Industry Roundtables (PDF 357 KB) Background On 30 April 2026, APRA called for a step-change in how banks, insurers and superannuation trustees manage AI-related risks ( media release ). On 8 May 2026, ASIC called on all licensees and market participants to urgently strengthen their cyber resilience measures, as frontier AI intensifies the global cyber risk environment ( 26-092MR ).",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
+    "title": "APRA releases response to consultation on transition of Life Insurance D2A data collections to APRA Connect",
+    "link": "https://www.apra.gov.au/news-and-publications/apra-releases-response-consultation-transition-life-insurance-d2a-data",
+    "published": "27 August 2026",
+    "summary": "",
+    "source": "APRA News",
+    "full_text": "The Australian Prudential Regulation Authority (APRA) has today released a response to its consultation on the transition of Life Insurance data collections from D2A to APRA Connect. APRA is updating the standards to ensure consistency with other collections in APRA Connect. The response to the consultation can be viewed on APRA's website at: Transition of Life Insurance D2A data collections to APRA Connect . For more information Email dataanalytics@apra.gov.au or mail to Manager, External Data Reporting Australian Prudential Regulation Authority GPO Box 9836, Sydney NSW 2001 Looking for discontinued publications? Search historical snapshots of APRA's website on the Australian Government web archive. Footnotes",
     "ai_summary": "Summary generation failed",
     "risk_rating": "Assessment Failed",
     "risk_rationale": "Impact assessment could not be completed",
