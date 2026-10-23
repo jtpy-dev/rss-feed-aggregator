@@ -1,5 +1,59 @@
 [
   {
+    "title": "APRA consults on confidentiality of data collected under SRS 604.0 RSE Licensee Profile",
+    "link": "https://www.apra.gov.au/news-and-publications/apra-consults-confidentiality-data-collected-under-srs-6040-rse-licensee",
+    "published": "23 October 2026",
+    "summary": "",
+    "source": "APRA News",
+    "full_text": "The Australian Prudential Regulation Authority (APRA) has commenced a consultation to determine the confidentiality of specified data collected under Reporting Standard SRS 604.0 RSE Licensee Profile in Superannuation Data Transformation: Phase 2 Depth. The relevant data is already published in APRA’s annual fund-level superannuation statistics and annual superannuation bulletin for 2025 and prior years. The proposed determination would enable APRA to maintain the existing format of these publications. APRA is not proposing any changes to the scope of data published or the format of these publications. Interested parties are invited to provide feedback on whether any of the specified data should be considered confidential, including any detriment to commercial interests that may arise from disclosure. Submissions close 6 November 2026 . View the consultation update on APRA’s website at: Superannuation Data Transformation: Phase 2 Depth Footnotes Note on submissions It is APRA's policy to publish all submissions on the APRA website unless the respondent specifically tells APRA in writing that all or part of the submission is to remain confidential. An automatically generated confidentiality statement in an email does not satisfy this purpose. If you would like only part of your submission to be confidential, you should provide this information marked as 'confidential' in a separate attachment. Submissions may be the subject of a request for access made under the Freedom of Information Act 1982 (FOIA). APRA will determine such requests, if any, in accordance with the provisions of the FOIA. Information in the submission about any APRA-regulated entity that is not in the public domain and that is identified as confidential will be protected by section 56 of the Australian Prudential Regulation Authority Act 1998 and will therefore be exempt from production under the FOIA.",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
+    "title": "Consultation on confidentiality of data collected under SRS 604.0",
+    "link": "https://www.apra.gov.au/news-and-publications/consultation-confidentiality-data-collected-under-srs-6040",
+    "published": "23 October 2026",
+    "summary": "",
+    "source": "APRA News",
+    "full_text": "APRA is consulting on whether the specific data collected under SRS 604.0 RSE Licensee Profile and identified in Appendix 1 should be determined not to contain confidential information under section 57 of the APRA Act. The purpose of this consultation is to facilitate APRA maintaining the existing format of the Annual Fund-Level Superannuation Statistics and Annual Superannuation Bulletin publications. APRA previously published the data collected under SRS 600.0 Profile and Structure RSE Licensee (SRS 600.0) in these publications. After SRS 600.0 was revoked in late 2025 , APRA now collects similar data under SRS 604.0 RSE Licensee Profile (SRS 604.0). APRA is not proposing through this consultation any change in the scope of data being published, or the format of publication. Proposal for confidentiality APRA proposes to determine the specified data collected under SRS 604.0 and identified in Appendix 1 does not contain confidential information for the purposes of section 57 of the APRA Act. Request for feedback APRA invites interested parties to make representations on whether any of the data identified in Appendix 1 should remain confidential, including specific information about any detriment to commercial interests that may arise from disclosure. Written submissions should be emailed to dataconsultations@apra.gov.au by 6 November 2026 and addressed to: Chief Data Officer, Data, Technology and Security Division, Australian Prudential Regulation Authority. Following the conclusion of the consultation, APRA will consider any feedback received in deciding whether to make the proposed determination and communicate the outcome. APRA is satisfied a two-week consultation is appropriate in this specific case given the consultation relates to the confidentiality of data that is already published by APRA. Yours sincerely, Andy Robertson Chief Data Office Data, Technology and Security Division Appendix 1 – Data proposed to be determined to be non-confidential to facilitate ongoing publication APRA proposes to determine the following data submitted to APRA under SRS 604.0 to be non-confidential: Table Column number Topic 3A 2 Director Type 3 Director Representative Type 9 Gender 11 Director Remuneration 4 2 Board Or Board Committee Type APRA notes that these data topics are currently published in: the Annual Fund-Level Superannuation Statistics in Table 1 the Annual Superannuation Bulletin - licensees publication in Table 2 Footnotes Note on submissions It is APRA's policy to publish all submissions on the APRA website unless the respondent specifically tells APRA in writing that all or part of the submission is to remain confidential. An automatically generated confidentiality statement in an email does not satisfy this purpose. If you would like only part of your submission to be confidential, you should provide this information marked as 'confidential' in a separate attachment. Submissions may be the subject of a request for access made under the Freedom of Information Act 1982 (FOIA). APRA will determine such requests, if any, in accordance with the provisions of the FOIA. Information in the submission about any APRA-regulated entity that is not in the public domain and that is identified as confidential will be protected by section 56 of the Australian Prudential Regulation Authority Act 1998 and will therefore be exempt from production under the FOIA.",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
+    "title": "ASIC accepts cancellation of company auditor Benjamin Peters’ registration after audit surveillance",
+    "link": "https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2026-releases/26-254mr-asic-accepts-cancellation-of-company-auditor-benjamin-peters-registration-after-audit-surveillance",
+    "published": "23 October 2026",
+    "summary": "",
+    "source": "ASIC Media Releases",
+    "full_text": "ASIC has accepted Benjamin Alfred Peters’ application for the cancellation of his registration as a company auditor after raising concerns about his role as lead auditor and engagement partner in the audit of a large proprietary company. As part of its 2025–26 audit surveillance program, ASIC reviewed an audit of L Audit Pty Ltd, an authorised audit company of which Mr Peters is the sole director. ASIC identified significant audit quality concerns in several areas. ASIC has also accepted L Audit’s application for the cancellation of its authorised audit company registration.",
+    "ai_summary": "Summary generation failed",
+    "risk_rating": "Assessment Failed",
+    "risk_rationale": "Impact assessment could not be completed",
+    "risk_confidence": "N/A",
+    "industries": [
+      "Other"
+    ],
+    "industry": "Other",
+    "industry_rationale": "Industry classification could not be completed",
+    "industry_confidence": "N/A"
+  },
+  {
     "title": "APRA publishes Deputy Chair David Bradbury’s speech to FSC Retirement Summit",
     "link": "https://www.apra.gov.au/news-and-publications/apra-publishes-deputy-chair-david-bradburys-speech-fsc-retirement-summit",
     "published": "22 October 2026",
